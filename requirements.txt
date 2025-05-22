@@ -3,3 +3,5 @@ google-generativeai
 PyMuPDF
 sentence-transformers
 chromadb
+flask
+toml
