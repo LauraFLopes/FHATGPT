@@ -1,20 +1,41 @@
 import os
+import time
 import streamlit as st
 import google.generativeai as genai
-import fitz
+import fitz  # PyMuPDF
 from sentence_transformers import SentenceTransformer
 import chromadb
+import hashlib
 
-# --- KONFIGURATION ---
-API_KEY = st.secrets.get("GEMINI_API_KEY", None)
-if not API_KEY:
-    st.error("Gemini API key not found. Bitte setze GEMINI_API_KEY in den Streamlit Secrets.")
-    st.stop()
+# ========================
+# HILFSFUNKTIONEN
+# ========================
 
-@st.cache_resource # effizienter, da die Info im Cache gespeichert wird
+def timed_step(name, func, *args, **kwargs):
+    start = time.time()
+    result = func(*args, **kwargs)
+    end = time.time()
+    st.write(f"**{name}** in {end - start:.2f} Sekunden.")
+    return result
+
+def get_file_hash(file_path):
+    hasher = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        hasher.update(f.read())
+    return hasher.hexdigest()
+
+# ========================
+# MODELL- UND DATENBANK-SETUP
+# ========================
+
+@st.cache_resource
 def load_gemini_model(api_key, model_name):
     genai.configure(api_key=api_key)
     return genai.GenerativeModel(model_name)
+
+@st.cache_resource
+def load_embedding_model(model_name):
+    return SentenceTransformer(model_name)
 
 @st.cache_resource
 def get_chroma_client(path):
@@ -24,13 +45,15 @@ def get_chroma_client(path):
 def get_pdf_knowledge_collection(_client):
     return _client.get_or_create_collection("pdf_knowledge")
 
-@st.cache_resource
-def load_embedding_model(model_name):
-    return SentenceTransformer(model_name)
+# ========================
+# PDF VERARBEITUNG
+# ========================
 
-# --- FUNKTION ZUM VERARBEITEN EINER PDF-DATEI ---
-def process_pdf(pdf_path, embedding_model):
+@st.cache_data(show_spinner=False, max_entries=10)
+def process_pdf(pdf_path, _embedding_model):
+    file_hash = get_file_hash(pdf_path)
     text = ""
+
     try:
         with fitz.open(pdf_path) as doc:
             for page in doc:
@@ -40,105 +63,137 @@ def process_pdf(pdf_path, embedding_model):
         return None
 
     chunks = text.split("\n\n")
-    embeddings = embedding_model.encode(chunks)
+    embeddings = _embedding_model.encode(chunks)
+
     doc_id = os.path.splitext(os.path.basename(pdf_path))[0]
     ids = [f"{doc_id}-{i}" for i in range(len(chunks))]
-    metadatas = [{"source": doc_id, "chunk": i} for i in range(len(chunks))]
+    metadatas = [{"source": doc_id, "chunk": i, "file_hash": file_hash} for i in range(len(chunks))]
 
     return chunks, embeddings, ids, metadatas
 
-# --- FUNKTION ZUM LADEN UND VERARBEITEN ALLER PDF-DATEIEN ---
-def load_and_process_pdfs(pdf_folder, embedding_model, collection):
-    all_chunks = []
-    all_embeddings = []
-    all_ids = []
-    all_metadatas = []
+def update_pdfs_in_collection(pdf_folder, embedding_model, collection):
+    existing = collection.get(include=["metadatas"])
+    existing_hashes = {
+        doc_id.split("-")[0]: metadata.get("file_hash", None)
+        for doc_id, metadata in zip(existing["ids"], existing["metadatas"])
+    }
 
-    for filename in os.listdir(pdf_folder):
-        if filename.endswith(".pdf"):
-            pdf_path = os.path.join(pdf_folder, filename)
-            result = process_pdf(pdf_path, embedding_model)
-            if result:
-                chunks, embeddings, ids, metadatas = result
-                all_chunks.extend(chunks)
-                all_embeddings.extend(embeddings)
-                all_ids.extend(ids)
-                all_metadatas.extend(metadatas)
+    current_hashes = {
+        os.path.splitext(f)[0]: get_file_hash(os.path.join(pdf_folder, f))
+        for f in os.listdir(pdf_folder) if f.endswith(".pdf")
+    }
 
-    if all_embeddings:
-        collection.add(
-            embeddings=all_embeddings,
-            documents=all_chunks,
-            ids=all_ids,
-            metadatas=all_metadatas
-        )
-        st.success(f"✅ {len(all_embeddings)} Text-Chunks aus {len(os.listdir(pdf_folder))} PDF-Dateien verarbeitet und in die Vektordatenbank geladen.")
-    else:
-        st.warning("⚠️ Keine PDF-Dateien zum Verarbeiten gefunden.")
+    to_add = [doc for doc, h in current_hashes.items()
+              if doc not in existing_hashes or existing_hashes[doc] != h]
+    to_remove = [doc for doc in existing_hashes if doc not in current_hashes]
 
-# --- relevantesten Text-Chunks aus der ChromaDB-Sammlung
+    if to_remove:
+        collection.delete(where={"source": {"$in": to_remove}})
+
+    for doc_id in to_add:
+        pdf_path = os.path.join(pdf_folder, f"{doc_id}.pdf")
+        result = process_pdf(pdf_path, embedding_model)
+        if result:
+            chunks, embeddings, ids, metadatas = result
+            collection.delete(where={"source": doc_id})
+            collection.add(embeddings=embeddings, documents=chunks, ids=ids, metadatas=metadatas)
+
+    return len(to_add), len(to_remove)
+
+# ========================
+# FRAGEN & ANTWORTEN
+# ========================
+
 def get_relevant_chunks(question, collection, embedding_model, n_results=3):
-    """Ruft die relevantesten Text-Chunks aus der Vektordatenbank basierend auf der Frage ab."""
+    start = time.time()
     question_embedding = embedding_model.encode([question])
-    results = collection.query(
-        query_embeddings=question_embedding,
-        n_results=n_results
-    )
-    relevant_chunks = results['documents'][0] if results and results['documents'] else []
-    return relevant_chunks
+    embedding_time = time.time()
 
-# --- FUNKTION ZUM BEANTWORTEN VON FRAGEN MIT CHATVERLAUF ---
+    results = collection.query(query_embeddings=question_embedding, n_results=n_results)
+    query_time = time.time()
+
+    documents = results['documents'][0] if results and results['documents'] else []
+
+    st.write(f"**Embedding der Frage:** {embedding_time - start:.2f} Sekunden.")
+    st.write(f"**Vektor-Suche (ChromaDB):** {query_time - embedding_time:.2f} Sekunden.")
+
+    return documents
+
 def ask_chatbot(question, chat_history, model, collection, embedding_model):
-    """Beantwortet die Frage des Nutzers unter Berücksichtigung des relevanten Kontexts aus der Vektordatenbank."""
+    start = time.time()
     relevant_chunks = get_relevant_chunks(question, collection, embedding_model)
     context = "\n\n".join(relevant_chunks)
 
-    # Erstelle den Prompt mit Kontext
-    prompt_with_context = f"Beantworte die folgende Frage basierend auf den bereitgestellten Informationen:\n\n{context}\n\nFrage: {question}\n\nAntwort:"
+    # 1. Relevante Info-Chunks als Kontext einfügen (einmalig pro Antwort)
+    messages = []
 
-    context_messages = []
-    for message in chat_history:
-        if message["role"] != "system":
-            context_messages.append({"role": message["role"], "parts": [message["content"]]})
+    # a) Kontext als Assistant-Nachricht – wirkt natürlicher als System-Rolle
+    messages.append({
+        "role": "assistant",
+        "parts": [f"Hier sind relevante Informationen aus Dokumenten:\n\n{context}"]
+    })
 
-    context_messages.append({"role": "user", "parts": [prompt_with_context]})
+    # b) Chatverlauf anhängen
+    messages.extend([{"role": m["role"], "parts": [m["content"]]} for m in chat_history])
 
+    # c) Neue Nutzerfrage anhängen
+    messages.append({"role": "user", "parts": [question]})
+
+    llm_start = time.time()
     try:
-        response = model.generate_content(contents=context_messages)
+        response = model.generate_content(contents=messages)
+        llm_end = time.time()
+        st.write(f"**Antwort vom Sprachmodell:** {llm_end - llm_start:.2f} Sekunden.")
+        st.write(f"**Gesamtdauer der Anfrage:** {llm_end - start:.2f} Sekunden.")
         return response.text
     except Exception as e:
-        st.error(f"Fehler bei der Gemini-Anfrage mit Kontext: {e}")
+        st.error(f"Fehler bei der Antwortgenerierung: {e}")
         return None
 
-# --- STREAMLIT UI ---
+# ========================
+# STREAMLIT UI
+# ========================
+
 st.title("Chatbot der FH Wedel")
 
-# Initialisiere Session State
+# API Key prüfen
+API_KEY = st.secrets.get("GEMINI_API_KEY", None)
+if not API_KEY:
+    st.error("Gemini API key not found. Bitte setze GEMINI_API_KEY in den Streamlit Secrets.")
+    st.stop()
+
+# Chat-Historie initialisieren
 if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = [{"role": "assistant", "content": "Hallo! Ich bin dein Chatbot für Fragen rund um die FH Wedel. Frag mich alles, was du wissen möchtest!"}]
+    st.session_state["chat_history"] = [{
+        "role": "assistant",
+        "content": "Hallo! Ich bin dein Chatbot für Fragen rund um die FH Wedel. Frag mich alles, was du wissen möchtest!"
+    }]
 
 if "pdfs_processed" not in st.session_state:
     st.session_state.pdfs_processed = False
 
-# Lade gecachte Ressourcen
-model = load_gemini_model(API_KEY, "gemini-1.5-flash")
-embedding_model = load_embedding_model('all-mpnet-base-v2')
-client = get_chroma_client("./chroma_db")
-collection = get_pdf_knowledge_collection(client)
+# Modelle und Datenbank mit Zeitmessung laden
+model = timed_step("Modell 'gemini-1.5-flash' geladen", load_gemini_model, API_KEY, "gemini-1.5-flash")
+embedding_model = timed_step("Embedding-Modell 'all-mpnet-base-v2' geladen", load_embedding_model, 'all-mpnet-base-v2')
+client = timed_step("ChromaDB-Client geladen", get_chroma_client, "./chroma_db")
+collection = timed_step("ChromaDB-Sammlung geladen", get_pdf_knowledge_collection, client)
 
-# Button zum Laden und Verarbeiten der PDFs (wird nur einmal beim Start ausgeführt)
+# PDFs nur einmal verarbeiten
 if not st.session_state.pdfs_processed:
-    with st.spinner("Verarbeite PDF-Dateien..."):
-        load_and_process_pdfs("./pdf_docs", embedding_model, collection)
+    with st.spinner("PDFs werden verarbeitet..."):
+        added, removed = timed_step("Update PDFs in Collection", update_pdfs_in_collection, "./pdf_docs", embedding_model, collection)
+        st.success(f"{added} PDFs hinzugefügt/aktualisiert, {removed} entfernt.")
         st.session_state.pdfs_processed = True
+else:
+    st.success(f"Datenbank enthält {collection.count()} Einträge.")
 
-# Zeige den Chatverlauf
+# Chat-Historie anzeigen
 for message in st.session_state["chat_history"]:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Eingabefeld für die Benutzerfrage
-user_question = st.chat_input("Stelle hier deine Frage zur Universität:")
+# Frage eingeben
+user_question = st.chat_input("Stelle hier deine Frage zur FH Wedel:")
 
 if user_question:
     st.session_state["chat_history"].append({"role": "user", "content": user_question})
@@ -146,7 +201,6 @@ if user_question:
         st.markdown(user_question)
 
     with st.spinner("Denke nach..."):
-        # Rufe die angepasste ask_chatbot-Funktion auf und übergebe die Vektordatenbank und das Embedding-Modell
         answer = ask_chatbot(user_question, st.session_state["chat_history"], model, collection, embedding_model)
         if answer:
             st.session_state["chat_history"].append({"role": "assistant", "content": answer})
