@@ -6,6 +6,7 @@ import fitz  # PyMuPDF
 from sentence_transformers import SentenceTransformer
 import chromadb
 import hashlib
+import re
 
 # ========================
 # HILFSFUNKTIONEN
@@ -27,6 +28,44 @@ def get_file_hash(file_path):
     with open(file_path, "rb") as f:
         hasher.update(f.read())
     return hasher.hexdigest()
+
+# Teilt einen gegebenen Markdown-Text anhand von Überschriften (## etc.) in logische Abschnitte ("Chunks").
+# Wenn ein Chunk zu lang wird (basierend auf max_length), wird er unabhängig von Überschriften ebenfalls geteilt.
+# Dies ist nützlich für semantisches Chunking bei Dokumenten mit Markdown-Struktur für Modulhandbücher.
+def split_text_by_markdown_headings(text, max_length=1000):
+    """
+    Teilt Markdown-Text in semantische Abschnitte basierend auf Überschriften.
+    Ein Abschnitt (Chunk) endet bei einer neuen Überschrift oder wenn die maximale Länge überschritten wird.
+    """
+    header_pattern = re.compile(r"^#{1,6}\s+.*")
+    chunks = []
+    current_chunk = []
+    current_length = 0
+
+    for line in text.splitlines():
+        is_header = header_pattern.match(line)
+
+        # Wenn Überschrift und aktueller Chunk nicht leer → Chunk speichern
+        if is_header and current_chunk:
+            chunks.append("\n".join(current_chunk).strip())
+            current_chunk = [line]
+            current_length = len(line)
+            continue
+
+        current_chunk.append(line)
+        current_length += len(line)
+
+        # Falls zu lang, auch ohne Header trennen
+        if current_length > max_length:
+            chunks.append("\n".join(current_chunk).strip())
+            current_chunk = []
+            current_length = 0
+
+    # Letzten Chunk nicht vergessen
+    if current_chunk:
+        chunks.append("\n".join(current_chunk).strip())
+
+    return [chunk for chunk in chunks if chunk]
 
 # ========================
 # MODELL- UND DATENBANK-SETUP
@@ -73,19 +112,15 @@ def process_pdf(pdf_path, _embedding_model):
         st.error(f"Fehler beim Lesen von {pdf_path}: {e}")
         return None
 
-    # Zerlege Text in Abschnitte (Chunks).
-    chunks = text.split("\n\n")
+    # Markdown-basiertes Chunking
+    chunks = split_text_by_markdown_headings(text)
 
     # Berechne Embeddings für jeden Chunk
     embeddings = _embedding_model.encode(chunks)
 
-    # Generiert die IDs und Metadaten für die Speicherung in ChromaDB.
-    # Jeder Chunk benötigt eine eindeutige ID und zusätzliche beschreibende Metadaten.
-    doc_id = os.path.splitext(os.path.basename(pdf_path))[0] # Eindeutige ID für das gesamte PDF-Dokument (Dateiname ohne Endung).
-    ids = [f"{doc_id}-{i}" # Eindeutige ID für jeden einzelnen Chunk (Dokumenten-ID + Chunk-Nummer).
-                for i in range(len(chunks))
-                ]
-    # Zusätzliche Informationen für jeden Chunk, z.B. Herkunft und Dateihash für Updates.
+    # Generiere IDs und Metadaten
+    doc_id = os.path.splitext(os.path.basename(pdf_path))[0]
+    ids = [f"{doc_id}-{i}" for i in range(len(chunks))]
     metadatas = [{"source": doc_id, "chunk": i, "file_hash": file_hash} for i in range(len(chunks))]
 
     return chunks, embeddings, ids, metadatas
