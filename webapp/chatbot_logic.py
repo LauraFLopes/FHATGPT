@@ -183,29 +183,28 @@ def ask_chatbot(question, chat_history, model, collection, embedding_model):
     relevant_chunks = get_relevant_chunks(question, collection, embedding_model)
     context = "\n\n".join(relevant_chunks)
 
-    # TODO: hier Prompt
+    # Erstelle die Nachrichten für den Prompt
     messages = []
-
-    # Kontext als Assistant-Nachricht (klingt natürlicher als System-Prompt).
     messages.append({
         "role": "assistant",
         "parts": [f"Hier sind relevante Informationen aus Dokumenten:\n\n{context}"]
     })
-
-    # Bisherige Konversation anhängen.
     messages.extend([{"role": m["role"], "parts": [m["content"]]} for m in chat_history])
-
-    # Neue Nutzerfrage anhängen.
     messages.append({"role": "user", "parts": [question]})
 
-    # Antwort generieren lassen.
+    # Antwort generieren
     llm_start = time.time()
     try:
         response = model.generate_content(contents=messages)
         llm_end = time.time()
         print(f"**Antwort vom Sprachmodell:** {llm_end - llm_start:.2f} Sekunden.")
         print(f"**Gesamtdauer der Anfrage:** {llm_end - start:.2f} Sekunden.")
-        return response.text
+
+        # Extrahiere den Text aus der Antwort
+        if hasattr(response, "text"):
+            return response.text
+        else:
+            return str(response)
     except Exception as e:
         print(f"Fehler bei der Antwortgenerierung: {e}")
         return None

@@ -1,4 +1,5 @@
 from chatbot_logic import *
+import toml
 
 # --- Lade Secrets ---
 secrets = toml.load(".streamlit/secrets.toml")
@@ -51,7 +52,7 @@ def ask():
         print(f"❗ Fehler: {e}")
         return jsonify({"answer": f"Fehler: {str(e)}"}), 500
 
-    chat_history.append({"role": "bot", "content": answer})
+    chat_history.append({"role": "assistant", "content": answer})
     return jsonify({"answer": answer})
 
 if __name__ == "__main__":
