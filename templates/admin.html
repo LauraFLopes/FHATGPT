@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FH Wedel Chatbot - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 FH Wedel Chatbot - Admin Panel</h1>
+        
+        <div id="session-info" class="session-info hidden"></div>
+        
+        <div id="login-section">
+            <p>Bitte Admin-Token eingeben:</p>
+            <input type="password" id="token-input" class="token-input" placeholder="Admin-Token" autocomplete="off">
+            
+            <div class="checkbox-container">
+                <label>
+                    <input type="checkbox" id="remember-me"> 
+                    Angemeldet bleiben (30 Tage)
+                </label>
+            </div>
+            
+            <button onclick="saveToken()">Anmelden</button>
+            <div id="login-error" class="status error hidden"></div>
+            
+            <div class="status warning security-notice">
+                ⚠️ <strong>Sicherheitshinweis:</strong> Verwende "Angemeldet bleiben" nur auf vertrauenswürdigen Geräten.
+                Die Session läuft standardmäßig nach 15 Minuten Inaktivität ab.
+            </div>
+        </div>
+        
+        <div id="admin-section" class="hidden">
+            <div style="margin-bottom: 20px;">
+                <button onclick="checkStatus()">📊 Status abrufen</button>
+                <button onclick="syncVectorStore()">🔄 Synchronisation starten</button>
+                <button onclick="resetSystem()" style="background: #dc3545; float: right; margin-left: 10px;">🚨 System Reset</button>
+                <button onclick="logout()" class="logout-btn" style="float: right;">🚪 Abmelden</button>
+            </div>
+            
+            <div id="status-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Konfiguration
+        const SESSION_TIMEOUT = 15 * 60 * 1000; // 15 Minuten in Millisekunden
+        const PERSISTENT_TIMEOUT = 30 * 24 * 60 * 60 * 1000; // 30 Tage
+        
+        let adminToken = null;
+        let lastActivity = Date.now();
+        let sessionTimer = null;
+        let isPersistent = false;
+        
+        // Session Management
+        function initSession() {
+            // Prüfe sessionStorage (temporär)
+            const sessionData = sessionStorage.getItem('adminSession');
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                if (Date.now() - session.lastActivity < SESSION_TIMEOUT) {
+                    adminToken = session.token;
+                    lastActivity = session.lastActivity;
+                    verifyToken(adminToken);
+                    startSessionTimer();
+                    return;
+                }
+            }
+            
+            // Prüfe localStorage (persistent, falls aktiviert)
+            const persistentData = localStorage.getItem('adminSession');
+            if (persistentData) {
+                const session = JSON.parse(persistentData);
+                if (Date.now() - session.created < PERSISTENT_TIMEOUT) {
+                    adminToken = session.token;
+                    isPersistent = true;
+                    verifyToken(adminToken);
+                    startSessionTimer();
+                    return;
+                } else {
+                    // Abgelaufen
+                    localStorage.removeItem('adminSession');
+                }
+            }
+        }
+        
+        function updateActivity() {
+            lastActivity = Date.now();
+            if (!isPersistent) {
+                sessionStorage.setItem('adminSession', JSON.stringify({
+                    token: adminToken,
+                    lastActivity: lastActivity
+                }));
+            }
+        }
+        
+        function startSessionTimer() {
+            if (!isPersistent) {
+                clearInterval(sessionTimer);
+                // Update jede Sekunde für flüssigen Timer
+                sessionTimer = setInterval(() => {
+                    if (Date.now() - lastActivity > SESSION_TIMEOUT) {
+                        showSessionExpired();
+                    } else {
+                        updateSessionInfo();
+                    }
+                }, 1000); // Jede Sekunde updaten
+            }
+            updateSessionInfo();
+        }
+        
+        function updateSessionInfo() {
+            const sessionInfo = document.getElementById('session-info');
+            if (adminToken && !isPersistent) {
+                const remaining = Math.max(0, SESSION_TIMEOUT - (Date.now() - lastActivity));
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                sessionInfo.textContent = `Session läuft in ${minutes}:${seconds.toString().padStart(2, '0')} ab`;
+                sessionInfo.classList.remove('hidden');
+            } else if (isPersistent) {
+                sessionInfo.textContent = '🔐 Dauerhafte Session';
+                sessionInfo.classList.remove('hidden');
+            } else {
+                sessionInfo.classList.add('hidden');
+            }
+        }
+        
+        function showSessionExpired() {
+            clearInterval(sessionTimer);
+            adminToken = null;
+            sessionStorage.removeItem('adminSession');
+            alert('⏱️ Ihre Session ist abgelaufen. Bitte melden Sie sich erneut an.');
+            location.reload();
+        }
+        
+        // Aktivität tracken
+        document.addEventListener('click', updateActivity);
+        document.addEventListener('keypress', updateActivity);
+        
+        // Token Verifizierung
+        function verifyToken(token) {
+            fetch('/admin/status', {
+                headers: {'X-Admin-Token': token}
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('login-section').classList.add('hidden');
+                    document.getElementById('admin-section').classList.remove('hidden');
+                    checkStatus();
+                } else {
+                    // Token ungültig
+                    sessionStorage.removeItem('adminSession');
+                    localStorage.removeItem('adminSession');
+                    adminToken = null;
+                }
+            });
+        }
+        
+        function saveToken() {
+            const token = document.getElementById('token-input').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            const errorDiv = document.getElementById('login-error');
+            
+            if (!token) {
+                errorDiv.textContent = '❌ Bitte Token eingeben';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            errorDiv.innerHTML = 'Prüfe Token... <span class="loader"></span>';
+            errorDiv.className = 'status info';
+            errorDiv.classList.remove('hidden');
+            
+            fetch('/admin/status', {
+                headers: {'X-Admin-Token': token}
+            })
+            .then(response => {
+                if (response.ok) {
+                    adminToken = token;
+                    isPersistent = rememberMe;
+                    
+                    if (rememberMe) {
+                        // Persistent in localStorage
+                        localStorage.setItem('adminSession', JSON.stringify({
+                            token: token,
+                            created: Date.now()
+                        }));
+                    } else {
+                        // Temporär in sessionStorage
+                        sessionStorage.setItem('adminSession', JSON.stringify({
+                            token: token,
+                            lastActivity: Date.now()
+                        }));
+                    }
+                    
+                    document.getElementById('login-section').classList.add('hidden');
+                    document.getElementById('admin-section').classList.remove('hidden');
+                    errorDiv.classList.add('hidden');
+                    startSessionTimer();
+                    checkStatus();
+                } else if (response.status === 401) {
+                    errorDiv.textContent = '❌ Kein Token angegeben';
+                    errorDiv.className = 'status error';
+                } else if (response.status === 403) {
+                    errorDiv.textContent = '❌ Ungültiger Token - Zugriff verweigert';
+                    errorDiv.className = 'status error';
+                } else {
+                    errorDiv.textContent = `❌ Fehler: ${response.statusText}`;
+                    errorDiv.className = 'status error';
+                }
+            })
+            .catch(error => {
+                errorDiv.textContent = `❌ Verbindungsfehler: ${error}`;
+                errorDiv.className = 'status error';
+            });
+        }
+        
+        function logout() {
+            if (confirm('Wirklich abmelden?')) {
+                clearInterval(sessionTimer);
+                sessionStorage.removeItem('adminSession');
+                localStorage.removeItem('adminSession');
+                adminToken = null;
+                isPersistent = false;
+                location.reload();
+            }
+        }
+        
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function checkStatus() {
+            updateActivity();
+            const output = document.getElementById('status-output');
+            output.innerHTML = '<div class="status info">Lade Status... <span class="loader"></span></div>';
+            
+            fetch('/admin/status', {
+                headers: {'X-Admin-Token': adminToken}
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    output.innerHTML = `<div class="status error">❌ Fehler: ${data.error}</div>`;
+                } else {
+                    let html = '<h2>📊 Vector Store Status</h2>';
+                    
+                    // Übersichts-Statistiken
+                    html += '<div class="stats-grid">';
+                    html += `
+                        <div class="stat-card">
+                            <div class="stat-value">${data.total_files || 0}</div>
+                            <div class="stat-label">PDF-Dateien</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${Object.keys(data.categories || {}).length}</div>
+                            <div class="stat-label">Kategorien</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${formatBytes(data.vector_store_size || data.total_size_local || 0)}</div>
+                            <div class="stat-label">${data.vector_store_size ? 'Vector Store Größe' : 'Lokale Größe'}</div>
+                        </div>
+                    `;
+                    html += '</div>';
+                    
+                    // System-IDs und Sync-Info
+                    html += '<div class="status info">';
+                    html += `<strong>Vector Store ID:</strong> ${data.vector_store_id || 'Nicht vorhanden'}<br>`;
+                    html += `<strong>Assistant ID:</strong> ${data.assistant_id || 'Nicht vorhanden'}<br>`;
+                    
+                    // Sync-Informationen
+                    if (data.last_sync_attempt) {
+                        html += `<strong>Letzter Sync-Versuch:</strong> ${new Date(data.last_sync_attempt).toLocaleString('de-DE')}<br>`;
+                    }
+                    if (data.last_sync) {
+                        html += `<strong>Letzte erfolgreiche Sync:</strong> ${new Date(data.last_sync).toLocaleString('de-DE')}`;
+                    } else {
+                        html += `<strong>Letzte erfolgreiche Sync:</strong> Nie`;
+                    }
+                    
+                    // Wenn Vector Store size != local size, zeige beide
+                    if (data.vector_store_size && data.total_size_local && 
+                        Math.abs(data.vector_store_size - data.total_size_local) > 1000) {
+                        html += `<br><br>📊 <strong>Größenvergleich:</strong><br>`;
+                        html += `Lokale Dateien: ${formatBytes(data.total_size_local)}<br>`;
+                        html += `Vector Store: ${formatBytes(data.vector_store_size)} `;
+                        const compression = ((1 - data.vector_store_size / data.total_size_local) * 100).toFixed(1);
+                        html += `<span style="color: #28a745">(${compression}% komprimiert)</span>`;
+                    }
+                    
+                    html += '</div>';
+                    
+                    // Kategorien mit Dateilisten
+                    if (data.categories && Object.keys(data.categories).length > 0) {
+                        html += '<h3>📁 Kategorien und Dateien</h3>';
+                        
+                        for (const [category, info] of Object.entries(data.categories)) {
+                            html += `
+                                <div class="category-card">
+                                    <div class="category-header">
+                                        📂 ${category} 
+                                        <span style="float: right; font-weight: normal;">
+                                            ${info.files} Dateien | ${formatBytes(info.size)}
+                                        </span>
+                                    </div>
+                                    <div class="file-list">
+                            `;
+                            
+                            if (info.file_list && info.file_list.length > 0) {
+                                info.file_list.sort().forEach(file => {
+                                    html += `<div class="file-item">📄 ${file}</div>`;
+                                });
+                            } else {
+                                html += '<div class="file-item" style="color: #999;">Keine Dateien</div>';
+                            }
+                            
+                            html += `
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        html += '<div class="status warning">⚠️ Keine Kategorien gefunden</div>';
+                    }
+                    
+                    output.innerHTML = html;
+                }
+            })
+            .catch(error => {
+                output.innerHTML = `<div class="status error">❌ Verbindungsfehler: ${error}</div>`;
+            });
+        }
+        
+        function syncVectorStore() {
+            updateActivity();
+            if (!confirm('Synchronisation starten? Dies kann einige Minuten dauern.')) return;
+            
+            const output = document.getElementById('status-output');
+            output.innerHTML = '<div class="status info">🔄 Synchronisation läuft...</div>';
+            
+            // Container für Progress-Updates
+            const progressContainer = document.createElement('div');
+            progressContainer.style.marginTop = '20px';
+            output.appendChild(progressContainer);
+            
+            // Verwende Server-Sent Events für Live-Updates
+            fetch('/admin/sync', {
+                method: 'POST',
+                headers: {
+                    'X-Admin-Token': adminToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ stream: true })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                
+                function readStream() {
+                    reader.read().then(({ done, value }) => {
+                        if (done) return;
+                        
+                        const chunk = decoder.decode(value);
+                        const lines = chunk.split('\n');
+                        
+                        lines.forEach(line => {
+                            if (line.startsWith('data: ')) {
+                                try {
+                                    const data = JSON.parse(line.slice(6));
+                                    
+                                    if (data.complete) {
+                                        // Finale Nachricht
+                                        output.innerHTML = `<div class="status ${data.status}">${data.message}</div>`;
+                                        
+                                        // Lade Status nach 2 Sekunden neu
+                                        if (data.status === 'success') {
+                                            setTimeout(checkStatus, 2000);
+                                        }
+                                    } else {
+                                        // Progress Update
+                                        const update = document.createElement('div');
+                                        update.className = `status ${data.status || 'info'}`;
+                                        update.style.marginBottom = '10px';
+                                        
+                                        let content = data.message;
+                                        
+                                        // Zeige Details wenn vorhanden
+                                        if (data.details) {
+                                            if (data.details.categories) {
+                                                content += '<br>Kategorien: ' + data.details.categories.join(', ');
+                                            }
+                                            
+                                            if (data.details.counts) {
+                                                content += '<div style="margin-top: 10px;">';
+                                                if (data.details.counts.new > 0) {
+                                                    content += `<div>➕ Neue Dateien: ${data.details.counts.new}</div>`;
+                                                    if (data.details.new && data.details.new.length > 0) {
+                                                        content += '<div style="margin-left: 20px; font-size: 12px;">';
+                                                        data.details.new.forEach(f => {
+                                                            content += `• ${f}<br>`;
+                                                        });
+                                                        if (data.details.counts.new > data.details.new.length) {
+                                                            content += `... und ${data.details.counts.new - data.details.new.length} weitere`;
+                                                        }
+                                                        content += '</div>';
+                                                    }
+                                                }
+                                                
+                                                if (data.details.counts.modified > 0) {
+                                                    content += `<div>🔄 Geänderte Dateien: ${data.details.counts.modified}</div>`;
+                                                }
+                                                
+                                                if (data.details.counts.deleted > 0) {
+                                                    content += `<div>➖ Gelöschte Dateien: ${data.details.counts.deleted}</div>`;
+                                                    if (data.details.deleted && data.details.deleted.length > 0) {
+                                                        content += '<div style="margin-left: 20px; font-size: 12px;">';
+                                                        data.details.deleted.forEach(f => {
+                                                            content += `• ${f}<br>`;
+                                                        });
+                                                        if (data.details.counts.deleted > data.details.deleted.length) {
+                                                            content += `... und ${data.details.counts.deleted - data.details.deleted.length} weitere`;
+                                                        }
+                                                        content += '</div>';
+                                                    }
+                                                }
+                                                content += '</div>';
+                                            }
+                                            
+                                            if (data.details.progress) {
+                                                content += `<div style="margin-top: 10px;">`;
+                                                content += `<strong>${data.details.progress.current}/${data.details.progress.total}</strong> verarbeitet`;
+                                                content += `</div>`;
+                                            }
+                                        }
+                                        
+                                        update.innerHTML = content;
+                                        progressContainer.appendChild(update);
+                                        
+                                        // Scroll zum Ende
+                                        progressContainer.scrollTop = progressContainer.scrollHeight;
+                                    }
+                                } catch (e) {
+                                    console.error('Error parsing SSE data:', e);
+                                }
+                            }
+                        });
+                        
+                        readStream(); // Weiterlesen
+                    });
+                }
+                
+                readStream();
+            })
+            .catch(error => {
+                output.innerHTML = `<div class="status error">❌ Verbindungsfehler: ${error}</div>`;
+            });
+        }
+        
+        function resetSystem() {
+            if (!confirm('⚠️ WARNUNG: Dies löscht ALLE Daten!\n\n- Vector Store\n- Alle PDFs im OpenAI Storage\n- Assistant\n- Einstellungen\n\nWirklich fortfahren?')) {
+                return;
+            }
+            
+            if (!confirm('🚨 LETZTE WARNUNG!\n\nDies kann NICHT rückgängig gemacht werden!\n\nWirklich ALLES löschen?')) {
+                return;
+            }
+            
+            const output = document.getElementById('status-output');
+            output.innerHTML = '<div class="status warning">🔄 System-Reset läuft... <span class="loader"></span><br>Dies kann einige Minuten dauern.</div>';
+            
+            fetch('/admin/reset', {
+                method: 'POST',
+                headers: {
+                    'X-Admin-Token': adminToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ confirm: true })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'reset completed') {
+                    output.innerHTML = `
+                        <div class="status success">
+                            ✅ ${data.message}
+                            <br><br>
+                            <strong>⚠️ ${data.warning}</strong>
+                            <br><br>
+                            Die Verbindung wird gleich unterbrochen...
+                        </div>
+                    `;
+                    
+                    // Nach 3 Sekunden Fehlermeldung zeigen (da Server down ist)
+                    setTimeout(() => {
+                        output.innerHTML += `
+                            <div class="status error" style="margin-top: 20px;">
+                                ❌ Verbindung zum Server verloren (Das ist normal!)
+                                <br><br>
+                                Bitte starte die App manuell neu.
+                            </div>
+                        `;
+                    }, 3000);
+                } else {
+                    output.innerHTML = `<div class="status error">❌ Fehler: ${data.error || 'Unbekannter Fehler'}</div>`;
+                }
+            })
+            .catch(error => {
+                output.innerHTML = `<div class="status error">❌ Verbindungsfehler: ${error}</div>`;
+            });
+        }
+        
+        // Enter-Taste für Token-Eingabe
+        document.getElementById('token-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveToken();
+        });
+        
+        // Session beim Laden initialisieren
+        initSession();
+    </script>
+</body>
+</html>

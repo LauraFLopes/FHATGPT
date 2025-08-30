@@ -1,0 +1,534 @@
+{
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_AWP25.0.pdf": {
+    "hash": "167f204fcad0d00780d432a8569ead49b297ba92e6c5cc36dc17c152419c0332",
+    "size": 463259,
+    "modified": 1749462691.3404775,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_AWP25.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_BWL23.0.pdf": {
+    "hash": "3d75232f10e0c9c8111fc03624d2f3c1162b014c219d9529d4dcd8fedafb9d6e",
+    "size": 513738,
+    "modified": 1749462691.3461905,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_BWL23.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_CGT23.0.pdf": {
+    "hash": "5d90b40de5d69e44f87209f7733c8d293798b4bcfda64040b7ec3585fd938902",
+    "size": 432716,
+    "modified": 1749462691.3529606,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_CGT23.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_DSAI25.0.pdf": {
+    "hash": "af385463fa646292fdf6715dcf68b80897d0219f86929b650ebe97a4417be90b",
+    "size": 496492,
+    "modified": 1749462691.3592327,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_DSAI25.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_ECom23.0.pdf": {
+    "hash": "6733d617ec1149da59065544661ae7be71b4e0e86d7bbdc1709f191ff195d46a",
+    "size": 426491,
+    "modified": 1749462691.3649838,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_ECom23.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_Inf25.0.pdf": {
+    "hash": "4323a2b2027d8456b904a2568385faa3d8f490c606f760cc7baa3f626249be9e",
+    "size": 542968,
+    "modified": 1749462691.3754582,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_Inf25.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_ITE25.0.pdf": {
+    "hash": "fa43d3d0510667a7df330d1f52af59cb567ac399a7e2487c04dcc18f9940a566",
+    "size": 509960,
+    "modified": 1749462691.3675902,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_ITE25.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_ITMC25.0.pdf": {
+    "hash": "7ca7c3b42aee370fdf1d3dff1c79ef877b26a0d6acf79c62fa741e722ad1bc42",
+    "size": 501592,
+    "modified": 1749462691.371817,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_ITMC25.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_MInf25.0.pdf": {
+    "hash": "35edb1fb1b34b44096cda33d9267f24bfa2615d93bff940590591200e64859ee",
+    "size": 454832,
+    "modified": 1749462691.3780396,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_MInf25.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_STec24.0.pdf": {
+    "hash": "84b6d18b8438e31de8eb70f849c53f88e1cf51cb9b23c6f5a32e51a780d00263",
+    "size": 472053,
+    "modified": 1749462691.3822565,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_STec24.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_TInf24.0.pdf": {
+    "hash": "fa967ed08ec7252f16a54c842da6586099518f246b13b75a8996a454cb4ae4ce",
+    "size": 462091,
+    "modified": 1749462691.3843188,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_TInf24.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_WInf23.0.pdf": {
+    "hash": "e9e20a90737d1b3baedb63f89b7de4c37693fb0d3d54fa0ad734508304337eef",
+    "size": 452654,
+    "modified": 1749462691.3890524,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_WInf23.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Modulhandbuch\\Modulhandbuch_B_WIng25.0.pdf": {
+    "hash": "28f4824602bb990d6dcc2822367112cf992014903c78222dab7235df5db3866a",
+    "size": 575647,
+    "modified": 1749462691.392704,
+    "full_path": "pdfs\\Bachelor Modulhandbuch\\Modulhandbuch_B_WIng25.0.pdf",
+    "category": "Bachelor Modulhandbuch"
+  },
+  "Bachelor Studienordnung\\SPO_B_AWP25.0.pdf": {
+    "hash": "795aa45d60b9691c5d5cb7b47567c7dbef77d73695b37f22beacf033eeef01cf",
+    "size": 209515,
+    "modified": 1749462691.3947525,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_AWP25.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_BWL23.0.pdf": {
+    "hash": "544143788a2956b395e5bb6fcb478aac272d0d61320dad2fdca8e6222af2aa5d",
+    "size": 207743,
+    "modified": 1749462691.3962626,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_BWL23.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_CGT23.0.pdf": {
+    "hash": "5be0c9801e217f62a22a7701959463fcdbe8e9bb5a05bdd9472af6d5779c9a71",
+    "size": 208469,
+    "modified": 1749462691.3977735,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_CGT23.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_DSAI25.0.pdf": {
+    "hash": "3cee853d9fcf76147e47272a64c27d6fd84043de320ce91a488ae471bee204da",
+    "size": 209479,
+    "modified": 1749462691.398841,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_DSAI25.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_ECom23.0.pdf": {
+    "hash": "bbf0e87800b36e5b1aefd10340c0a399e85b3f5c32a5aa7a4e5a7fcdf659ca45",
+    "size": 208871,
+    "modified": 1749462691.3999348,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_ECom23.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_Inf25.0.pdf": {
+    "hash": "d2790c32a76dcec06c00aae38db9ede24ebd301105289415332cbce0333b41ae",
+    "size": 210961,
+    "modified": 1749462691.4051766,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_Inf25.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_ITE25.0.pdf": {
+    "hash": "2dc2cc7cf342e5dfb2ae41c0356e8ab85b562367b2d0bdcec8bc675cc607add6",
+    "size": 206449,
+    "modified": 1749462691.401992,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_ITE25.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_ITMC25.0.pdf": {
+    "hash": "8b3afc5b5c6b1cecaddb2e01e693bc0751a837a3d13ae5e49c9ef895631abbf7",
+    "size": 213154,
+    "modified": 1749462691.4031153,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_ITMC25.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_MInf25.0.pdf": {
+    "hash": "744325ed9b63c7854be810ad051f1089a1c8ad40c8aafb2426d58642bfdb94a9",
+    "size": 207043,
+    "modified": 1749462691.4067767,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_MInf25.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_STec24.0.pdf": {
+    "hash": "d549d9b9c83d5e72a081605ae7f8a434bfb36915aff998962a5cb85038daf05e",
+    "size": 212656,
+    "modified": 1749462691.4082143,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_STec24.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_TInf24.0.pdf": {
+    "hash": "0d5d11cbd0ccfca0fef769686e57a661c0f2ccb5270d17d2c6d72c655f274a1a",
+    "size": 206875,
+    "modified": 1749462691.4103124,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_TInf24.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_WInf23.0a.pdf": {
+    "hash": "d5933b4fbb86b0d4a271b35496a662229b531e4ee963eb996280f98ff944b517",
+    "size": 208001,
+    "modified": 1749462691.4113383,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_WInf23.0a.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienordnung\\SPO_B_WIng25.0.pdf": {
+    "hash": "c8784ca882f157c5215c58abec9ab16de52b562bfd25e13afb3af24d1dab6ddf",
+    "size": 226614,
+    "modified": 1749462691.413391,
+    "full_path": "pdfs\\Bachelor Studienordnung\\SPO_B_WIng25.0.pdf",
+    "category": "Bachelor Studienordnung"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_AWP25.0.pdf": {
+    "hash": "b7078e0627c20d89643a3aa6262d12ec950d97e268100a4658bcce1fb43bff4c",
+    "size": 296333,
+    "modified": 1749462691.4144218,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_AWP25.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_BWL23.0.pdf": {
+    "hash": "2ad80c2d0118c9de5b2020c386dd21646829d8dc3994777a48b1759e370c1002",
+    "size": 323014,
+    "modified": 1749462691.416509,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_BWL23.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_CGT23.0.pdf": {
+    "hash": "77a7ce1cb7917054d418b14aaaece5e93572be5a5a83f536e405b0432d8f4fcd",
+    "size": 319984,
+    "modified": 1749462691.4181306,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_CGT23.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_DSAI25.0.pdf": {
+    "hash": "3df0d18caaf1f4e0b3bf7ce441999fea2b92b845716b838e874e7796ca6e7951",
+    "size": 343140,
+    "modified": 1749462691.4202445,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_DSAI25.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_ECom23.0.pdf": {
+    "hash": "c9040bd9c1c72d47a6e3a0b604d85579e5d3f57c068228ef7793e5afedcc081e",
+    "size": 321769,
+    "modified": 1749462691.4223728,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_ECom23.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_Inf25.0.pdf": {
+    "hash": "6e3f4ac7f07d5e161f9d08d95c4241b63c748434309e15e2cffaf4a6c1b4daaa",
+    "size": 364825,
+    "modified": 1749462691.4291708,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_Inf25.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_ITE25.0.pdf": {
+    "hash": "9efaf60e6e5719d2f1acf138462fee6ce8666554575ce1a3f30d6f2c736cc4eb",
+    "size": 335114,
+    "modified": 1749462691.424416,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_ITE25.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_ITMC25.0.pdf": {
+    "hash": "53dfcf7e16451856d643ae72aaceb4e025d758f27db4b2a3089d0e86d516b47c",
+    "size": 324652,
+    "modified": 1749462691.4265249,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_ITMC25.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_MInf25.0.pdf": {
+    "hash": "6061a4201095912190b203fa3710104a27c825ee2b051260d157c70691decab7",
+    "size": 338140,
+    "modified": 1749462691.4312332,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_MInf25.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_STec24.0.pdf": {
+    "hash": "dad140ab56a3e7aab90a7a375a5fba9995d80a7f67f2c214fc9e2f71cf6e777f",
+    "size": 330205,
+    "modified": 1749462691.4327414,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_STec24.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_TInf24.0.pdf": {
+    "hash": "75cf11740db90f81a5529bb37915a3d4fa2677b3b77a5647aa2dd0a5b71e6917",
+    "size": 334443,
+    "modified": 1749462691.4348803,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_TInf24.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_WInf23.0a.pdf": {
+    "hash": "01955ff93f61b3fa7542fac3b1a48a134654c4f323b294a5c05eacf96903be54",
+    "size": 315931,
+    "modified": 1749462691.4374483,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_WInf23.0a.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Bachelor Studienverlaufsplan\\Curriculum_B_WIng25.0.pdf": {
+    "hash": "ab49a6f51e5498ad9df6758789eae9d288fe051e83e22a907836c9cdda7b416c",
+    "size": 362520,
+    "modified": 1749462691.4395201,
+    "full_path": "pdfs\\Bachelor Studienverlaufsplan\\Curriculum_B_WIng25.0.pdf",
+    "category": "Bachelor Studienverlaufsplan"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_BWL23.3.pdf": {
+    "hash": "a9d8bb262cae5064d1eee1d559e6361bc378daf028cf682f595c8f48a990bbb6",
+    "size": 965058,
+    "modified": 1749462691.4446902,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_BWL23.3.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_BWL23.4.pdf": {
+    "hash": "fbff8e8f4832269a9fa6f342504ebf28a96e165e1be3b04dada2fab0b1b7fb79",
+    "size": 995567,
+    "modified": 1749462691.450658,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_BWL23.4.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_DSAI24.0.pdf": {
+    "hash": "b9b7db7b0417e2b6618dc4c8b7c971af519b4aa5e65cfd99dfce8ead21463d41",
+    "size": 779038,
+    "modified": 1749462691.454862,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_DSAI24.0.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_ECom24.0.pdf": {
+    "hash": "4b1f01f68fcaf25883a221e3284e54041fefb7aac8368cf9758d4832bbb63c0a",
+    "size": 451884,
+    "modified": 1749462691.457412,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_ECom24.0.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_Inf20.0.pdf": {
+    "hash": "7287f5b4acd3eeff5ee5a6b1b5aa7be5a3b75878263e34e9d971c3e24e036f2c",
+    "size": 764095,
+    "modified": 1749462691.4663825,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_Inf20.0.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_ITE24.1.pdf": {
+    "hash": "b570c879bc33fead18ca5c0a6bc49c8745c3edd99a2490291011fde8b6b800b3",
+    "size": 713199,
+    "modified": 1749462691.4610863,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_ITE24.1.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_ITS19.0.pdf": {
+    "hash": "fdc56e0bd7cf1d2da57d8360be2300aeecb5596e4e199963ad485d8ffddca259",
+    "size": 140099,
+    "modified": 1749462691.4622035,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_ITS19.0.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_SDBM22.3.pdf": {
+    "hash": "79da118bfcfca9f045f96ecfedfd971b7f73fa8c7ce79090340da58a97965839",
+    "size": 662188,
+    "modified": 1749462691.4700341,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_SDBM22.3.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_SDBM22.4.pdf": {
+    "hash": "2a2f9641340d0566fe1b90083dc470d1e5abe96800d119c5700baba9a75a933f",
+    "size": 744766,
+    "modified": 1749462691.474239,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_SDBM22.4.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_WIM24.0.pdf": {
+    "hash": "c221e3a58ca7df31e851aef4bbe35271a47a3634aa2ca4e929539d0ad5a6f336",
+    "size": 254446,
+    "modified": 1749462691.4763536,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_WIM24.0.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Modulhandbuch\\Modulhandbuch_M_WIng24.0.pdf": {
+    "hash": "189333405b0b894530e5bad0e7e6765301f150e090da2a93dbba3bf74d3cacd8",
+    "size": 1190702,
+    "modified": 1749462691.483076,
+    "full_path": "pdfs\\Master Modulhandbuch\\Modulhandbuch_M_WIng24.0.pdf",
+    "category": "Master Modulhandbuch"
+  },
+  "Master Studienordnung\\SPO_M_BWL23.3.pdf": {
+    "hash": "5c8d64544939d8e9f9f37e86bae29b2a7e76fd0cb63274c596559a2e1cbd5e64",
+    "size": 203963,
+    "modified": 1749462691.4840808,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_BWL23.3.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_BWL23.4.pdf": {
+    "hash": "ef7a066d3ef6807a67b8ff411b82a1cce124b001142a277dd47842a3d698a2bc",
+    "size": 197890,
+    "modified": 1749462691.486142,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_BWL23.4.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_DSAI24.0.pdf": {
+    "hash": "bab9064f480d2c4fc9584968c3f83c8dc4faf1d6daf3aa4ab64a09f85b9b6d6b",
+    "size": 186058,
+    "modified": 1749462691.4876525,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_DSAI24.0.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_ECom24.0.pdf": {
+    "hash": "63c5631d87928d4b0001d3d2a6aa27737f91cb6bdfde4662e5be58a6700098f4",
+    "size": 182664,
+    "modified": 1749462691.4887002,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_ECom24.0.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_Inf20.0.pdf": {
+    "hash": "53d79f667d8e17c41c02b0e76db624b0015e0ced491ae8acd150d8401ddd4152",
+    "size": 182332,
+    "modified": 1749462691.4928286,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_Inf20.0.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_ITE24.1.pdf": {
+    "hash": "4c71dfdd58cbfefb519ba99b1984d7002bc295e30211de60b29c1a43e3807d46",
+    "size": 183375,
+    "modified": 1749462691.4897356,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_ITE24.1.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_ITS19.0.pdf": {
+    "hash": "b4734a966b351ac5ecbe7c69f941401384088dc7b06ff4a85d180ce6a47e7703",
+    "size": 182085,
+    "modified": 1749462691.4918294,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_ITS19.0.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_SDBM22.3.pdf": {
+    "hash": "8427b2d351cd3f0215a377e88c38a0a9560f5d65f5b4e70f980188f67c3ab258",
+    "size": 187682,
+    "modified": 1749462691.4944215,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_SDBM22.3.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_SDBM22.4.pdf": {
+    "hash": "d4f8591ae8afa6084fd24d52dd403e1e5561a168224c134ec10ca09f248de7ed",
+    "size": 189840,
+    "modified": 1749462691.495491,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_SDBM22.4.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_WIM24.0.pdf": {
+    "hash": "8ba1f4218558bd6a1cd8cb5b5207f0ce6d9bcbc1bf9346c9e2617f5bfdba7e15",
+    "size": 187139,
+    "modified": 1749462691.4964957,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_WIM24.0.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienordnung\\SPO_M_WIng24.0.pdf": {
+    "hash": "fa0bd4aba9e11b1f9b3835ec2b4d7d24f22510d1d0d7388dffac032c7896e0f0",
+    "size": 193737,
+    "modified": 1749462691.4980574,
+    "full_path": "pdfs\\Master Studienordnung\\SPO_M_WIng24.0.pdf",
+    "category": "Master Studienordnung"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_BWL23.3.pdf": {
+    "hash": "d7d61d747545518624b0add86a4725e8a92bcf6e29f9fee9f97c0e1b1bbab9c5",
+    "size": 200216,
+    "modified": 1749462691.500386,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_BWL23.3.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_BWL23.4.pdf": {
+    "hash": "a5005b4180af745be00cc57fa0f6762ed810eb2fdf459b741876b3629e39941b",
+    "size": 215967,
+    "modified": 1749462691.501414,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_BWL23.4.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_DSAI24.0.pdf": {
+    "hash": "079fcc4a3f4a780763d565f1610e9f84e54552d8fc6e047b93fc51b736a2f685",
+    "size": 197295,
+    "modified": 1749462691.5024378,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_DSAI24.0.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_ECom24.0.pdf": {
+    "hash": "51537dc664ee53eae518de596592fc8fe7a4070ebb7b2dfe088a48114efeba42",
+    "size": 167601,
+    "modified": 1749462691.5039394,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_ECom24.0.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_Inf20.0.pdf": {
+    "hash": "4ca5de9e2868dc69c2b6d748ea443aaa40861916aebb4f285a0e8d38d7264fb7",
+    "size": 188033,
+    "modified": 1749462691.507519,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_Inf20.0.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_ITE24.1.pdf": {
+    "hash": "46370b8152917457d3e02551b4782668ea6bd31fba9651b90a8e72e5922e2032",
+    "size": 203754,
+    "modified": 1749462691.504966,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_ITE24.1.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_ITS19.0.pdf": {
+    "hash": "80ef3cc735d034d195bb8898019874b609983765bc74bc4a9f60ab05b69ad4f1",
+    "size": 171451,
+    "modified": 1749462691.5060089,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_ITS19.0.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_SDBM22.3.pdf": {
+    "hash": "7f65df012cd1ecd80d0e8443afe1db85cf2e50516b24b038bf55af48cac37b51",
+    "size": 172830,
+    "modified": 1749462691.5096693,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_SDBM22.3.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_SDBM22.4.pdf": {
+    "hash": "e93f977c3a1b129a870ac51ed2d9bacaf8e1af81aeba2c9d4afe9a6046031e66",
+    "size": 184478,
+    "modified": 1749462691.5106738,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_SDBM22.4.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_WIM24.0.pdf": {
+    "hash": "670083b74ed924527755b1c745d6ac47816142a3cdfd84ab7b28ebe32055a8d9",
+    "size": 185731,
+    "modified": 1749462691.5116954,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_WIM24.0.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Master Studienverlaufsplan\\Curriculum_M_WIng24.0.pdf": {
+    "hash": "89a558286c9f55bd23481179c4fadd80a8b34f61fb0cc010ed37d0cfda28d3cf",
+    "size": 240946,
+    "modified": 1749462691.5138316,
+    "full_path": "pdfs\\Master Studienverlaufsplan\\Curriculum_M_WIng24.0.pdf",
+    "category": "Master Studienverlaufsplan"
+  },
+  "Regularien\\PVO_2025_V1.pdf": {
+    "hash": "5afaacd9bff5ffa5e76fb88a5da6614ff183b14262caf5655660246f4830f083",
+    "size": 4723507,
+    "modified": 1749462691.540363,
+    "full_path": "pdfs\\Regularien\\PVO_2025_V1.pdf",
+    "category": "Regularien"
+  },
+  "Regularien\\Regularien_im_Studium.pdf": {
+    "hash": "30dc486bbe29bf7693260bdd8f761a9b41f310d3ad1bede0ebbf2c110ffe7830",
+    "size": 1241157,
+    "modified": 1749462691.5486398,
+    "full_path": "pdfs\\Regularien\\Regularien_im_Studium.pdf",
+    "category": "Regularien"
+  },
+  "Regularien\\Richtlinien_zum_technischen_Grundpraktikum_V3.pdf": {
+    "hash": "d567f69b8fbd77db40ba22764bf135391058e22c6271d2184d1881231dcec4ab",
+    "size": 71397,
+    "modified": 1749462691.5497265,
+    "full_path": "pdfs\\Regularien\\Richtlinien_zum_technischen_Grundpraktikum_V3.pdf",
+    "category": "Regularien"
+  },
+  "Regularien\\ZLO_2025_V1.pdf": {
+    "hash": "3163dab48404a65659802191d33b583756b7ef6896c682c837ba0d841488be34",
+    "size": 619373,
+    "modified": 1749462691.5529206,
+    "full_path": "pdfs\\Regularien\\ZLO_2025_V1.pdf",
+    "category": "Regularien"
+  }
+}

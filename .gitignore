@@ -1,0 +1,12 @@
+# IDE & Editor folders
+.idea/
+.vs/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+
+delete_files.py
