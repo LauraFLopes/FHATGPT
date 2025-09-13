@@ -1,7 +1,6 @@
 # IDE & Editor folders
 .idea/
 .vs/
-.streamlit
 
 # Python cache
 __pycache__/
