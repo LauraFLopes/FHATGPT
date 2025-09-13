@@ -54,7 +54,11 @@
         let sessionTimer = null;
         let isPersistent = false;
         
-        // Session Management
+        /**
+        * Initialisiert die Session beim Laden der Seite.
+        * Prüft sessionStorage für temporäre Sessions und localStorage für persistente Sessions.
+        * Verifiziert gespeicherte Tokens und startet den Session-Timer.
+        */
         function initSession() {
             // Prüfe sessionStorage (temporär)
             const sessionData = sessionStorage.getItem('adminSession');
@@ -86,6 +90,10 @@
             }
         }
         
+        /**
+        * Aktualisiert den Zeitstempel der letzten Aktivität.
+        * Speichert die aktualisierte Session-Information im entsprechenden Storage.
+        */
         function updateActivity() {
             lastActivity = Date.now();
             if (!isPersistent) {
@@ -96,6 +104,10 @@
             }
         }
         
+        /**
+        * Startet den Session-Timer für temporäre Sessions.
+        * Überwacht die Session-Zeit und zeigt verbleibende Zeit an.
+        */
         function startSessionTimer() {
             if (!isPersistent) {
                 clearInterval(sessionTimer);
@@ -111,6 +123,10 @@
             updateSessionInfo();
         }
         
+        /**
+        * Aktualisiert die Anzeige der Session-Information.
+        * Zeigt verbleibende Zeit für temporäre Sessions oder Status für persistente Sessions.
+        */
         function updateSessionInfo() {
             const sessionInfo = document.getElementById('session-info');
             if (adminToken && !isPersistent) {
@@ -127,6 +143,10 @@
             }
         }
         
+        /**
+        * Zeigt eine Meldung über abgelaufene Session und lädt die Seite neu.
+        * Löscht die Session-Daten und setzt alle Session-Variablen zurück.
+        */
         function showSessionExpired() {
             clearInterval(sessionTimer);
             adminToken = null;
@@ -139,7 +159,11 @@
         document.addEventListener('click', updateActivity);
         document.addEventListener('keypress', updateActivity);
         
-        // Token Verifizierung
+        /**
+        * Verifiziert ein Admin-Token beim Server.
+        * Zeigt bei Erfolg das Admin-Panel und lädt den Status.
+        * Bei Fehler werden gespeicherte Session-Daten gelöscht.
+        */
         function verifyToken(token) {
             fetch('/admin/status', {
                 headers: {'X-Admin-Token': token}
@@ -158,6 +182,11 @@
             });
         }
         
+        /**
+        * Speichert das eingegebene Admin-Token und meldet den Benutzer an.
+        * Validiert das Token beim Server und richtet die Session ein.
+        * Unterstützt temporäre und persistente Sessions.
+        */
         function saveToken() {
             const token = document.getElementById('token-input').value;
             const rememberMe = document.getElementById('remember-me').checked;
@@ -217,6 +246,11 @@
             });
         }
         
+        /**
+        * Meldet den Admin-Benutzer ab.
+        * Löscht alle Session-Daten und lädt die Seite neu.
+        * Fragt zur Sicherheit nach Bestätigung.
+        */
         function logout() {
             if (confirm('Wirklich abmelden?')) {
                 clearInterval(sessionTimer);
@@ -228,6 +262,13 @@
             }
         }
         
+        /**
+        * Formatiert Byte-Werte in lesbare Einheiten (KB, MB, GB).
+        * Konvertiert Bytes in die passende Größeneinheit mit 2 Dezimalstellen.
+        * 
+        * @param bytes Die Anzahl der Bytes
+        * @return Formatierte Größenangabe mit Einheit
+        */
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -236,6 +277,11 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
         
+        /**
+        * Ruft den aktuellen Status des Vector Stores vom Server ab.
+        * Zeigt detaillierte Informationen über Dateien, Kategorien und Synchronisationsstatus.
+        * Formatiert die Daten in eine übersichtliche HTML-Darstellung.
+        */
         function checkStatus() {
             updateActivity();
             const output = document.getElementById('status-output');
@@ -290,8 +336,6 @@
                         html += `<br><br>📊 <strong>Größenvergleich:</strong><br>`;
                         html += `Lokale Dateien: ${formatBytes(data.total_size_local)}<br>`;
                         html += `Vector Store: ${formatBytes(data.vector_store_size)} `;
-                        const compression = ((1 - data.vector_store_size / data.total_size_local) * 100).toFixed(1);
-                        html += `<span style="color: #28a745">(${compression}% komprimiert)</span>`;
                     }
                     
                     html += '</div>';
@@ -337,17 +381,39 @@
             });
         }
         
+        /**
+        * Startet die Synchronisation des Vector Stores.
+        * Verwendet Server-Sent Events für Live-Updates während der Synchronisation.
+        * Zeigt Progress-Updates in Echtzeit an und behält alle Details sichtbar.
+        */
         function syncVectorStore() {
             updateActivity();
             if (!confirm('Synchronisation starten? Dies kann einige Minuten dauern.')) return;
             
             const output = document.getElementById('status-output');
-            output.innerHTML = '<div class="status info">🔄 Synchronisation läuft...</div>';
+            
+            // Container für die initiale Nachricht
+            const statusMessage = document.createElement('div');
+            statusMessage.className = 'status info';
+            statusMessage.innerHTML = '🔄 Synchronisation läuft...';
+            output.innerHTML = '';
+            output.appendChild(statusMessage);
             
             // Container für Progress-Updates
             const progressContainer = document.createElement('div');
+            progressContainer.id = 'progress-container';
             progressContainer.style.marginTop = '20px';
+            progressContainer.style.maxHeight = '500px';
+            progressContainer.style.overflowY = 'auto';
+            progressContainer.style.backgroundColor = '#f8f9fa';
+            progressContainer.style.padding = '15px';
+            progressContainer.style.borderRadius = '5px';
+            progressContainer.style.border = '1px solid #dee2e6';
             output.appendChild(progressContainer);
+            
+            // Array um alle Updates zu speichern
+            const allUpdates = [];
+            let isComplete = false;
             
             // Verwende Server-Sent Events für Live-Updates
             fetch('/admin/sync', {
@@ -363,13 +429,17 @@
                 
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
+                let buffer = '';
                 
                 function readStream() {
                     reader.read().then(({ done, value }) => {
                         if (done) return;
                         
-                        const chunk = decoder.decode(value);
-                        const lines = chunk.split('\n');
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n');
+                        
+                        // Behalte den letzten unvollständigen Teil
+                        buffer = lines.pop() || '';
                         
                         lines.forEach(line => {
                             if (line.startsWith('data: ')) {
@@ -378,32 +448,48 @@
                                     
                                     if (data.complete) {
                                         // Finale Nachricht
-                                        output.innerHTML = `<div class="status ${data.status}">${data.message}</div>`;
+                                        isComplete = true;
                                         
-                                        // Lade Status nach 2 Sekunden neu
-                                        if (data.status === 'success') {
-                                            setTimeout(checkStatus, 2000);
+                                        // Update Status-Nachricht
+                                        statusMessage.className = `status ${data.status}`;
+                                        statusMessage.innerHTML = data.message;
+                                        
+                                        // Behalte Progress-Container mit allen Updates sichtbar
+                                        if (allUpdates.length > 0) {
+                                            // Füge Header zum Progress-Container hinzu
+                                            const headerDiv = document.createElement('div');
+                                            headerDiv.style.marginBottom = '10px';
+                                            headerDiv.style.fontWeight = 'bold';
+                                            headerDiv.style.borderBottom = '2px solid #007bff';
+                                            headerDiv.style.paddingBottom = '5px';
+                                            headerDiv.innerHTML = `📋 Synchronisations-Details (${allUpdates.length} Updates):`;
+                                            progressContainer.insertBefore(headerDiv, progressContainer.firstChild);
                                         }
+                                        
+                                        // KEIN automatisches Neuladen - User entscheidet wann er zurück zum Status will
                                     } else {
                                         // Progress Update
                                         const update = document.createElement('div');
                                         update.className = `status ${data.status || 'info'}`;
                                         update.style.marginBottom = '10px';
+                                        update.style.padding = '10px';
+                                        update.style.fontSize = '14px';
+                                        update.style.animation = 'fadeIn 0.3s ease-in';
                                         
                                         let content = data.message;
                                         
                                         // Zeige Details wenn vorhanden
                                         if (data.details) {
                                             if (data.details.categories) {
-                                                content += '<br>Kategorien: ' + data.details.categories.join(', ');
+                                                content += '<br><span style="color: #6c757d;">Kategorien: ' + data.details.categories.join(', ') + '</span>';
                                             }
                                             
                                             if (data.details.counts) {
                                                 content += '<div style="margin-top: 10px;">';
                                                 if (data.details.counts.new > 0) {
-                                                    content += `<div>➕ Neue Dateien: ${data.details.counts.new}</div>`;
+                                                    content += `<div style="color: #28a745;">➕ Neue Dateien: ${data.details.counts.new}</div>`;
                                                     if (data.details.new && data.details.new.length > 0) {
-                                                        content += '<div style="margin-left: 20px; font-size: 12px;">';
+                                                        content += '<div style="margin-left: 20px; font-size: 12px; color: #6c757d;">';
                                                         data.details.new.forEach(f => {
                                                             content += `• ${f}<br>`;
                                                         });
@@ -415,13 +501,13 @@
                                                 }
                                                 
                                                 if (data.details.counts.modified > 0) {
-                                                    content += `<div>🔄 Geänderte Dateien: ${data.details.counts.modified}</div>`;
+                                                    content += `<div style="color: #ffc107;">🔄 Geänderte Dateien: ${data.details.counts.modified}</div>`;
                                                 }
                                                 
                                                 if (data.details.counts.deleted > 0) {
-                                                    content += `<div>➖ Gelöschte Dateien: ${data.details.counts.deleted}</div>`;
+                                                    content += `<div style="color: #dc3545;">➖ Gelöschte Dateien: ${data.details.counts.deleted}</div>`;
                                                     if (data.details.deleted && data.details.deleted.length > 0) {
-                                                        content += '<div style="margin-left: 20px; font-size: 12px;">';
+                                                        content += '<div style="margin-left: 20px; font-size: 12px; color: #6c757d;">';
                                                         data.details.deleted.forEach(f => {
                                                             content += `• ${f}<br>`;
                                                         });
@@ -437,12 +523,36 @@
                                             if (data.details.progress) {
                                                 content += `<div style="margin-top: 10px;">`;
                                                 content += `<strong>${data.details.progress.current}/${data.details.progress.total}</strong> verarbeitet`;
+                                                // Progress Bar
+                                                const percentage = (data.details.progress.current / data.details.progress.total * 100).toFixed(0);
+                                                content += `
+                                                    <div style="width: 100%; background-color: #e9ecef; border-radius: 4px; margin-top: 5px;">
+                                                        <div style="width: ${percentage}%; background-color: #007bff; height: 20px; border-radius: 4px; text-align: center; line-height: 20px; color: white; font-size: 12px; transition: width 0.3s;">
+                                                            ${percentage}%
+                                                        </div>
+                                                    </div>
+                                                `;
+                                                content += `</div>`;
+                                            }
+                                            
+                                            if (data.details.batch_results) {
+                                                const br = data.details.batch_results;
+                                                content += `<div style="margin-top: 5px; font-size: 12px; color: #6c757d;">`;
+                                                content += `Batch-Ergebnis: ${br.completed} erfolgreich`;
+                                                if (br.failed > 0) {
+                                                    content += `, <span style="color: #dc3545;">${br.failed} fehlgeschlagen</span>`;
+                                                }
                                                 content += `</div>`;
                                             }
                                         }
                                         
                                         update.innerHTML = content;
+                                        
+                                        // Füge Update zum Container hinzu
                                         progressContainer.appendChild(update);
+                                        
+                                        // Speichere Update für spätere Referenz
+                                        allUpdates.push(update);
                                         
                                         // Scroll zum Ende
                                         progressContainer.scrollTop = progressContainer.scrollHeight;
@@ -464,8 +574,13 @@
             });
         }
         
+        /**
+        * Führt einen vollständigen System-Reset durch.
+        * Löscht Vector Store, alle Dateien, Assistant und Einstellungen.
+        * Erfordert zweifache Bestätigung und beendet die App nach Abschluss.
+        */
         function resetSystem() {
-            if (!confirm('⚠️ WARNUNG: Dies löscht ALLE Daten!\n\n- Vector Store\n- Alle PDFs im OpenAI Storage\n- Assistant\n- Einstellungen\n\nWirklich fortfahren?')) {
+            if (!confirm('⚠️ WARNUNG: Dies löscht ALLE Daten!\n\n- Vector Store\n- Alle PDFs in dem OpenAI Storage\n- Assistant\n- Einstellungen\n\nWirklich fortfahren?')) {
                 return;
             }
             

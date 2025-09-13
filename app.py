@@ -1,3 +1,6 @@
+"""
+Die Klasse ist für die Initialisierung der Webapp und den Umgang mit den HTTP-Requests zuständig.
+"""
 from flask import Flask, render_template, request, jsonify, Response, stream_with_context
 import toml
 from openai import OpenAI
@@ -17,7 +20,7 @@ secrets = toml.load(".streamlit/secrets.toml")
 
 # Admin-Token generieren oder aus secrets laden
 if "ADMIN_TOKEN" not in secrets:
-    # Generiere ein sicheres Token beim ersten Start
+    # Generiere ein Token beim ersten Start
     secrets["ADMIN_TOKEN"] = py_secrets.token_urlsafe(32)
     with open(".streamlit/secrets.toml", "w") as f:
         toml.dump(secrets, f)
@@ -28,56 +31,71 @@ else:
 
 ADMIN_TOKEN = secrets["ADMIN_TOKEN"]
 
-# OpenAI Client initialisieren (zentral fuer alle Module)
+# OpenAI Client initialisieren
 client = OpenAI(api_key=secrets.get("API_KEY"))
 if not secrets.get("API_KEY"):
-    raise ValueError("❌ Kein API-Schluessel gefunden. Setze 'API_KEY' in secrets.toml")
+    raise ValueError("❌ Kein API-Schlüssel gefunden. Setze 'API_KEY' in secrets.toml")
 
 # Model festlegen
 model = "gpt-4o"
 
-# Assistant laden (mit Client)
+# Assistant laden
 print("🚀 Initialisiere FH Wedel Chatbot...")
 assistant = load_assistant(model, secrets, client)
 
-# --- Chatverlauf (im RAM, einfach gehalten) ---
-chat_history = [{"role": "assistant", "content": "Hallo! Ich bin dein Chatbot fuer Fragen rund um die FH Wedel. Frag mich einfach!"}]
+# Chatverlauf
+chat_history = [{"role": "assistant", "content": "Hallo! Ich bin dein Chatbot für Fragen rund um die FH Wedel. Frag mich einfach!"}]
 
 # Thread-ID speichern (pro Session ein Thread)
 thread_id = None
 
 
+"""
+Initialisiert das Overlay für den Chatbot.
+
+@return Overlay für den Chatbot.
+"""
 @app.route("/")
 def index():
     return render_template("index.html", chat_history=chat_history)
 
 
+"""
+HTTP-Request für das Zurücksetzen des Chatverlaufs und des OpenAi-Threads.
+
+@return Die Startnachricht für den Chat.
+"""
 @app.route("/reset", methods=["POST"])
 def reset_chat():
     global chat_history, thread_id
     
-    initial_message = "Hallo! Ich bin dein Chatbot fuer Fragen rund um die FH Wedel. Frag mich einfach!"
+    initial_message = "Hallo! Ich bin dein Chatbot für Fragen rund um die FH Wedel. Frag mich einfach!"
     chat_history = [{"role": "assistant", "content": initial_message}]
     
-    # Neuen Thread fuer neue Konversation erstellen
+    # Neuen Thread für neue Konversation erstellen
     thread_id = None
     
-    # Sende die Willkommensnachricht zurueck
+    # Sende die Willkommensnachricht zurück
     return jsonify({"message": initial_message}), 200
 
 
+"""
+HTTP-Request für das Abschicken einer User-Nachricht.
+"""
 @app.route("/ask", methods=["POST"])
 def ask():
     global thread_id
     
+    # Fehlermeldung, falls keine Frage eingegeben
     user_question = request.json.get("question")
     if not user_question:
         return jsonify({"answer": "❗ Bitte gib eine Frage ein."}), 400
 
+    # Hinzufügen der Nachricht des Users an den Chatverlauf
     print(f"💬 Frage: {user_question}")
     chat_history.append({"role": "user", "content": user_question})
 
-    # Pruefe ob Streaming gewuenscht ist
+    # Prüfe ob Streaming gewünscht ist
     stream = request.json.get("stream", False)
     
     try:
@@ -101,7 +119,7 @@ def ask():
                         # Server-Sent Events Format
                         yield f"data: {json.dumps({'type': 'chunk', 'content': chunk})}\n\n"
                     
-                    # Speichere vollstaendige Antwort im Chat-Verlauf
+                    # Speichere vollständige Antwort im Chat-Verlauf
                     chat_history.append({"role": "assistant", "content": full_answer})
                     
                     # Sende End-Signal
@@ -119,7 +137,7 @@ def ask():
                 }
             )
         else:
-            # Normale Response (backward compatibility)
+            # Normale Response
             answer = ""
             for chunk in ask_assistant(user_question, assistant.id, thread_id, client):
                 answer += chunk
@@ -136,6 +154,11 @@ def ask():
         return jsonify({"answer": answer}), 500
 
 
+"""
+Kümmert sich um die Identifizierung der einzelnen HTTP-Requests, die eine Admin-Indentifizierung benötigen.
+
+@return Bestätigt die Admin-Identifikation
+"""
 # Admin-Authentifizierung Decorator
 def require_admin_token(f):
     @wraps(f)
@@ -147,17 +170,22 @@ def require_admin_token(f):
             return jsonify({"error": "Keine Berechtigung"}), 401
         
         if token != ADMIN_TOKEN:
-            return jsonify({"error": "Ungueltiger Token"}), 403
+            return jsonify({"error": "Ungültiger Token"}), 403
             
         return f(*args, **kwargs)
     return decorated_function
 
 
-# Admin-Routes fuer Vector Store Management
+"""
+HTTP-Request für den Umgang mit dem Synchronisationsvorgang der lokalen-Dateien und der Dateien im OpenAi-Cloud-Vektorspeicher.
+Benötigt Admin-Indentifikation.
+
+@return Angabe, ob die Synchronisation erfolgreich war.
+"""
 @app.route("/admin/sync", methods=["POST"])
 @require_admin_token
 def manual_sync():
-    # Pruefe ob Streaming gewuenscht ist
+    # Prüfe ob Streaming gewünscht ist
     stream = request.json.get("stream", False) if request.is_json else False
     
     if stream:
@@ -197,7 +225,7 @@ def manual_sync():
                     assistant = load_assistant(model, secrets, client)
                     yield f"data: {json.dumps({'message': '✅ Synchronisation abgeschlossen - Assistant neu geladen', 'status': 'success', 'complete': True})}\n\n"
                 else:
-                    yield f"data: {json.dumps({'message': '✅ Synchronisation abgeschlossen - keine Aenderungen', 'status': 'success', 'complete': True})}\n\n"
+                    yield f"data: {json.dumps({'message': '✅ Synchronisation abgeschlossen - keine Änderungen', 'status': 'success', 'complete': True})}\n\n"
                     
             except Exception as e:
                 yield f"data: {json.dumps({'message': f'❌ Fehler: {str(e)}', 'status': 'error', 'complete': True})}\n\n"
@@ -211,7 +239,7 @@ def manual_sync():
             }
         )
     else:
-        # Normale Response (backward compatibility)
+        # Normale Response
         try:
             from vector_store_manager import VectorStoreManager
             manager = VectorStoreManager(client=client, secrets=secrets)
@@ -230,13 +258,19 @@ def manual_sync():
                 return jsonify({
                     "status": "sync completed", 
                     "changes_found": False,
-                    "message": "Keine Aenderungen gefunden."
+                    "message": "Keine Änderungen gefunden."
                 }), 200
         except Exception as e:
             print(f"❌ Fehler bei manueller Synchronisation: {e}")
             return jsonify({"error": str(e)}), 500
 
 
+"""
+HTTP-Request um den Status des OpenAi-Cloud-Vektorspeichers zurückzugeben.
+Benötigt Admin-Identifikation.
+
+@return Den Status im JSON-Format.
+"""
 @app.route("/admin/status", methods=["GET"])
 @require_admin_token
 def sync_status():
@@ -246,7 +280,7 @@ def sync_status():
         manager = VectorStoreManager(client=client, secrets=secrets)
         status = manager.get_sync_status()
         
-        # Fuege Assistant-Info hinzu
+        # Füge Assistant-Info hinzu
         status["assistant_id"] = assistant.id if assistant else None
         
         return jsonify(status), 200
@@ -255,32 +289,38 @@ def sync_status():
         return jsonify({"error": str(e)}), 500
 
 
+"""
+HTTP-Request um das komplette System zurückzusetzen und beendet die App.
+Benötigt Admin-Identifikation.
+
+@return Bestätigung, ob es geklappt hat.
+"""
 @app.route("/admin/reset", methods=["POST"])
 @require_admin_token
 def reset_system():
-    """Setzt das gesamte System zurueck und beendet die App."""
-    # Zusaetzliche Sicherheitsabfrage ueber Parameter
+    """Setzt das gesamte System zurück und beendet die App."""
+    # Zusätzliche Sicherheitsabfrage über Parameter
     confirm = request.json.get("confirm", False) if request.is_json else False
     
     if not confirm:
         return jsonify({
-            "error": "Bestaetigung erforderlich",
-            "message": "Sende {'confirm': true} um den Reset zu bestaetigen.",
-            "warning": "DIES LOESCHT ALLE VECTOR STORES, FILES UND EINSTELLUNGEN!"
+            "error": "Bestätigung erforderlich",
+            "message": "Sende {'confirm': true} um den Reset zu bestätigen.",
+            "warning": "DIES LÖSCHT ALLE VECTOR STORES, FILES UND EINSTELLUNGEN!"
         }), 400
     
     try:
         from vector_store_manager import VectorStoreManager
         manager = VectorStoreManager(client=client, secrets=secrets)
         
-        # Fuehre Reset durch
+        # Führe Reset durch
         success = manager.reset_all(keep_admin_token=True)
         
         if success:
             # Response senden bevor wir die App beenden
             response = jsonify({
                 "status": "reset completed",
-                "message": "System wurde vollstaendig zurueckgesetzt. Die App wird beendet.",
+                "message": "System wurde vollständig zurückgesetzt. Die App wird beendet.",
                 "warning": "Die App wird in 2 Sekunden beendet!"
             })
             
@@ -309,7 +349,11 @@ def reset_system():
         return jsonify({"error": str(e)}), 500
 
 
+"""
+Intitialisierung des Overlays der Admin-Seite.
 
+@return Overlay für die Admin-Seite
+"""
 @app.route("/admin", methods=["GET"])
 def admin_panel():
     """Admin Web-Interface (Token-Eingabe erfolgt im Frontend)."""
@@ -317,15 +361,14 @@ def admin_panel():
 
 
 if __name__ == "__main__":
+    # Initialisierung des Dateien-Synchronisations-Schedulers.
     try:
-        scheduler = integrate_with_flask(app, client, secrets)
+        scheduler = integrate_with_flask(client, secrets)
         print("✅ Automatische Synchronisation aktiviert")
     except Exception as e:
         print(f"⚠️  Sync-Scheduler konnte nicht gestartet werden: {e}")
-        print("    Die App laeuft trotzdem, aber ohne automatische Synchronisation.")
+        print("    Die App läuft trotzdem, aber ohne automatische Synchronisation.")
     
-    # Flask ohne Debug-Mode starten um nervige venv-Reloads zu vermeiden
-    # Fuer Entwicklung kannst du debug=True setzen, aber dann gibt es viele Reloads
     app.run(
         port=5000, 
         debug=False,  # Kein Auto-Reload von Python-Dateien

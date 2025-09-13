@@ -1,3 +1,6 @@
+"""
+Die Klasse kümmert sich um den Scheduler, der regelmäßig checkt, ob es Änderungen an den lokalen PDF-Dateien gab.
+"""
 import schedule
 import time
 import threading
@@ -6,6 +9,14 @@ import signal
 import sys
 
 
+"""
+Der Scheduler, der die lokalen PDF-Dateien überwacht.
+
+@param self Die eigene Instanz
+@param client Der OpenAI-Client auf dem der Chatbot läuft.
+@param secrets Die Datenbank mit den wichtigen Infos, wie die ID des Vektorspeichers.
+@param check_interval_minutes Die Häufigkeit, wie oft die Synchronisation geprüft wird.
+"""
 class VectorStoreSyncScheduler:
     def __init__(self, client, secrets, check_interval_minutes=30):
         self.client = client
@@ -14,35 +25,53 @@ class VectorStoreSyncScheduler:
         self.running = False
         self.thread = None
         self.manager = None
-        
-    def _get_manager(self):
-        """Lazy-load VectorStoreManager um zirkulaere Imports zu vermeiden."""
+    
+
+    """
+    Gibt den Vektorspeicher-Manager zurück und speichert ihn falls nötig in der Klasse.
+
+    @param self Die eigene Instanz.
+    @return Der Manager für den Vektorspeicher.
+    """
+    def get_manager(self):
         if not self.manager:
             from vector_store_manager import VectorStoreManager
             self.manager = VectorStoreManager(client=self.client, secrets=self.secrets)
+        
         return self.manager
         
+    
+    """
+    Initialisiert einen Synchronisationsvorgang
+
+    @param self Die eigene Instanz.
+    """
     def sync_job(self):
-        """Job-Funktion fuer die Synchronisation."""
         print(f"\n⏰ [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Starte geplante Synchronisation...")
         try:
-            manager = self._get_manager()
+            manager = self.get_manager()
             has_changes = manager.sync_vector_stores()
             if has_changes:
-                print("✅ Synchronisation erfolgreich abgeschlossen - Aenderungen gefunden")
+                print("✅ Synchronisation erfolgreich abgeschlossen - Änderungen gefunden")
                 print("⚠️  WICHTIG: Der Assistant sollte neu geladen werden!")
                 print("    Rufe /admin/sync auf oder starte die App neu.")
             else:
-                print("ℹ️  Keine Aenderungen gefunden")
+                print("ℹ️  Keine Änderungen gefunden")
         except Exception as e:
             print(f"❌ Fehler bei der Synchronisation: {e}")
             import traceback
             traceback.print_exc()
     
+
+    """
+    Startet den Schudler im Hintergrund
+    
+    @param self Die eigene Instanz.
+    @param skip_initial_sync Gibt die Möglichkeit, ob man direkt beim Start der App eine Synchronisation möchte oder nicht
+    """
     def start(self, skip_initial_sync=False):
-        """Startet den Scheduler im Hintergrund."""
         if self.running:
-            print("⚠️  Scheduler laeuft bereits")
+            print("⚠️  Scheduler läuft bereits")
             return
         
         self.running = True
@@ -54,21 +83,31 @@ class VectorStoreSyncScheduler:
         else:
             print("🚀 Starte Vector Store Sync Scheduler (ohne initiale Synchronisation)...")
         
-        # Plane regelmaeßige Synchronisation
+        # Plane regelmäßige Synchronisation
         schedule.every(self.check_interval).minutes.do(self.sync_job)
         
         # Starte Scheduler-Thread
-        self.thread = threading.Thread(target=self._run_scheduler, daemon=True)
+        self.thread = threading.Thread(target=self.run_scheduler, daemon=True)
         self.thread.start()
         
-        print(f"✅ Scheduler gestartet - Pruefung alle {self.check_interval} Minuten")
+        print(f"✅ Scheduler gestartet - Prüfung alle {self.check_interval} Minuten")
     
-    def _run_scheduler(self):
-        """Interne Funktion fuer den Scheduler-Thread."""
+    """
+    Interne Funktion für den Scheduler-Thread.
+
+    @param self Die eigene Instanz
+    """
+    def run_scheduler(self):
         while self.running:
             schedule.run_pending()
             time.sleep(1)
     
+
+    """
+    Beendet den Scheduler.
+
+    @param self Die eigene Instanz.
+    """
     def stop(self):
         """Stoppt den Scheduler."""
         print("🛑 Stoppe Scheduler...")
@@ -77,13 +116,15 @@ class VectorStoreSyncScheduler:
             self.thread.join()
         print("✅ Scheduler gestoppt")
     
-    def force_sync(self):
-        """Erzwingt eine sofortige Synchronisation."""
-        print("🔄 Erzwinge Synchronisation...")
-        self.sync_job()
 
-# Integration in die Flask-App
-def integrate_with_flask(app, client, secrets):
+"""
+Initialisierung des Schedulers.
+
+@param client Der OpenAI-Client auf dem der Chatbot läuft.
+@param secrets Die Datenbank mit den wichtigen Infos, wie die ID des Vektorspeichers.
+@return Der Scheduler.
+"""
+def integrate_with_flask(client, secrets):
     """Integriert den Sync-Scheduler in die Flask-App."""
     scheduler = VectorStoreSyncScheduler(
         client=client, 
@@ -94,10 +135,10 @@ def integrate_with_flask(app, client, secrets):
     # Starte Scheduler OHNE initiale Sync (wurde bereits beim Assistant-Laden gemacht)
     scheduler.start(skip_initial_sync=True)
     
-    # Admin-Routes werden direkt in app.py definiert
-    
-    # Stoppe Scheduler beim Beenden
-    def shutdown_scheduler(signum=None, frame=None):
+    """
+    Stoppe Scheduler beim Beenden
+    """
+    def shutdown_scheduler(signum=None):
         scheduler.stop()
         if signum:
             sys.exit(0)

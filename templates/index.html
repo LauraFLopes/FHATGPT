@@ -71,6 +71,11 @@
         if (e.key === "Enter") ask();
     });
 
+     /**
+     * Sendet die Benutzerfrage an den Server und verarbeitet die Streaming-Antwort.
+     * Erstellt eine temporäre Nachricht mit Lade-Indikator und aktualisiert diese
+     * während des Streamings mit den empfangenen Daten.
+     */
     function ask() {
         const question = input.value.trim();
         if (!question) return;
@@ -98,6 +103,10 @@
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             
+            /**
+             * Liest den Stream rekursiv und verarbeitet die empfangenen Daten.
+             * Parsed Server-Sent Events und aktualisiert die Anzeige entsprechend.
+             */
             function readStream() {
                 reader.read().then(({ done, value }) => {
                     if (done) return;
@@ -152,6 +161,13 @@
         input.value = "";
     }
 
+     /**
+     * Fügt eine neue Nachricht zum Chat-Verlauf hinzu.
+     * Konvertiert Markdown zu HTML und bereinigt überflüssige Zeilenumbrüche.
+     * 
+     * @param role Die Rolle des Senders ("user" oder "assistant")
+     * @param content Der Nachrichteninhalt
+     */
     function appendMessage(role, content) {
         const message = document.createElement("div");
         message.className = `message ${role}`;
