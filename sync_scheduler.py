@@ -1,5 +1,8 @@
 """
-Die Klasse kümmert sich um den Scheduler, der regelmäßig checkt, ob es Änderungen an den lokalen PDF-Dateien gab.
+Dieses Modul enthält den Hintergrund-Scheduler für die Synchronisation:
+- Überwacht lokale PDF-Dateien.
+- Stößt regelmäßig eine Synchronisation mit dem OpenAI-Vektorspeicher an.
+- Wird in die Flask-App integriert, um im Hintergrund zu laufen.
 """
 import schedule
 import time
@@ -47,10 +50,15 @@ class VectorStoreSyncScheduler:
     @param self Die eigene Instanz.
     """
     def sync_job(self):
+        # Log-Ausgabe mit aktuellem Zeitstempel
         print(f"\n⏰ [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Starte geplante Synchronisation...")
         try:
+             # Vektorspeicher-Manager laden
             manager = self.get_manager()
+
+            # Synchronisation starten: True, wenn Änderungen gefunden wurden
             has_changes = manager.sync_vector_stores()
+            
             if has_changes:
                 print("✅ Synchronisation erfolgreich abgeschlossen - Änderungen gefunden")
                 print("⚠️  WICHTIG: Der Assistant sollte neu geladen werden!")
@@ -64,7 +72,7 @@ class VectorStoreSyncScheduler:
     
 
     """
-    Startet den Schudler im Hintergrund
+    Startet den Scheduler im Hintergrund
     
     @param self Die eigene Instanz.
     @param skip_initial_sync Gibt die Möglichkeit, ob man direkt beim Start der App eine Synchronisation möchte oder nicht
