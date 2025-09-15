@@ -76,9 +76,9 @@ pip install -r requirements.txt
    ```
 
 4. OpenAI API-Key hinterlegen
-1. API-Key auf https://platform.openai.com/api-keys generieren
-2. Datei .secrets/secrets.toml anlegen (Ordner muss existieren)
-3. API-Key dort eintragen:
+API-Key auf https://platform.openai.com/api-keys generieren
+Datei .secrets/secrets.toml anlegen (Ordner muss existieren)
+API-Key dort eintragen:
    ```bash
    API_KEY = "dein-openai-api-key"
    ADMIN_TOKEN = "ein-geheimes-admin-token"
@@ -86,7 +86,7 @@ pip install -r requirements.txt
    ASSISTANT_ID = ""      # wird beim ersten Sync erzeugt
    ```
 
-5. Programm starten
+### 5. Programm starten
   ```bash
   python app.py
   ```
@@ -98,7 +98,7 @@ Admin-Panel: http://localhost:5000/admin
 
 
 
-
+---
 1. Repository klonen:
    ```bash
    git clone https://github.com/LauraFLopes/FHATGPT.git
