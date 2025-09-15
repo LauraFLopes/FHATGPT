@@ -50,13 +50,13 @@ Voraussetzungen
 
 Das Programm ist betriebssystemunabhängig und läuft auf Windows, macOS und Linux, solange die passende Python-Version installiert ist.
 
-1. Repository klonen
+### 1. Repository klonen
   ```bash
   git clone https://github.com/LauraFLopes/FHATGPT.git
   cd chatbot
    ```
 
-3. Virtuelle Umgebung erstellen
+### 2. Virtuelle Umgebung erstellen
 
 Windows
   ```bash
@@ -82,18 +82,22 @@ pip install -r requirements.txt
    ```bash
    API_KEY = "dein-openai-api-key"
    ADMIN_TOKEN = "ein-geheimes-admin-token"
-  VECTOR_STORE_ID = ""   # wird beim ersten Sync erzeugt
-  ASSISTANT_ID = ""      # wird beim ersten Sync erzeugt
+   VECTOR_STORE_ID = ""   # wird beim ersten Sync erzeugt
+   ASSISTANT_ID = ""      # wird beim ersten Sync erzeugt
    ```
 
 5. Programm starten
-   ```bash
-    python app.py
-   ```
+  ```bash
+  python app.py
+  ```
 
 Chatbot ist erreichbar unter: http://localhost:5000
-
 Admin-Panel: http://localhost:5000/admin
+
+
+
+
+
 
 1. Repository klonen:
    ```bash
