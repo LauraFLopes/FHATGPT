@@ -109,7 +109,7 @@ Funktionen:
 ## 🗂 PDF-Synchronisation
 
 - Lokale PDFs liegen im `pdf/`-Ordner
-- Änderungen werden automatisch erkannt und regelmäßig synchronisiert (Intervall: Standard 60 Min.)  
+- Änderungen werden automatisch erkannt und regelmäßig synchronisiert (Intervall: Standard 30 Min.)  
 - Manuelle Synchronisation über Admin-Panel möglich  
 
 ---
