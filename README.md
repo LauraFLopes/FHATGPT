@@ -71,7 +71,7 @@ Linux / macOS
    ```
 
 3. Abhängigkeiten installieren
-   ```bash
+  ```bash
 pip install -r requirements.txt
    ```
 
