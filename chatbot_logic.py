@@ -87,7 +87,7 @@ def load_assistant(model_version, secrets, client):
         
         # Assistant-ID in secrets speichern
         secrets["ASSISTANT"] = assistant.id
-        with open(".streamlit/secrets.toml", "w") as f:
+        with open(".secrets/secrets.toml", "w") as f:
             toml.dump(secrets, f)
         print(f"✅ Neuer Assistant erstellt: {assistant.id}")
     

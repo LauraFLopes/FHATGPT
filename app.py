@@ -16,13 +16,13 @@ import time
 app = Flask(__name__)
 
 # Secrets laden
-secrets = toml.load(".streamlit/secrets.toml")
+secrets = toml.load(".secrets/secrets.toml")
 
 # Admin-Token generieren oder aus secrets laden
 if "ADMIN_TOKEN" not in secrets:
     # Generiere ein Token beim ersten Start
     secrets["ADMIN_TOKEN"] = py_secrets.token_urlsafe(32)
-    with open(".streamlit/secrets.toml", "w") as f:
+    with open(".secrets/secrets.toml", "w") as f:
         toml.dump(secrets, f)
     print(f"🔐 Admin-Token generiert: {secrets['ADMIN_TOKEN']}")
     print("   Speichere dieses Token sicher!")

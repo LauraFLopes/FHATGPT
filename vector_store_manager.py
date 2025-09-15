@@ -20,7 +20,7 @@ Der Manager für die Aufgaben der Synchronisation.
 @param pdf_base_path Der Ort, wo die lokalen PDF-Dateien gespeichert sind.
 """
 class VectorStoreManager:
-    def __init__(self, client=None, secrets=None, secrets_path=".streamlit/secrets.toml", pdf_base_path="pdfs"):
+    def __init__(self, client=None, secrets=None, secrets_path=".secrets/secrets.toml", pdf_base_path="pdfs"):
         self.secrets_path = secrets_path
         self.pdf_base_path = pdf_base_path
         self.manifest_path = os.path.join(pdf_base_path, ".vector_store_manifest.json")
