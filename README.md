@@ -23,25 +23,77 @@ Außerdem gibt es ein Admin-Panel für Synchronisation und Systemverwaltung.
 
 ```
 .
-├── app.py                 # Haupteinstiegspunkt: Flask-App mit HTTP-Endpunkten (Chat & Admin)
-├── chatbot_logic.py       # Kernlogik des Chatbots: Erstellung des Assistants, Beantwortung von Fragen, Verwaltung von Threads
-├── sync_scheduler.py      # Hintergrundprozess: plant und steuert die regelmäßige Synchronisation von Dokumenten
-├── vector_store_manager.py# Verwaltung der Vektordatenbank: Import, Aktualisierung und Abgleich von PDF-Inhalten
-├── templates/             # HTML-Vorlagen für die Benutzeroberfläche
-│   ├── index.html         # Chat-Frontend für Nutzer
-│   ├── admin.html         # Admin-Panel für Verwaltung und Monitoring
-├── static/                # Statische Dateien (CSS, Bilder, JS)
-│   ├── style.css          # Stylesheet für die Chat-Oberfläche
-│   ├── admin.css          # Stylesheet für das Admin-Panel
-├── .secrets/              # Konfigurationsordner (lokal, nicht ins Repo einchecken)
-│   └── secrets.toml       # API-Keys und weitere geheime Einstellungen
-├── requirements.txt       # Liste der Python-Abhängigkeiten
-└── README.md              # Projektdokumentation und Installationshinweise
+├── app.py                   # Haupteinstiegspunkt: Flask-App mit HTTP-Endpunkten (Chat & Admin)
+├── chatbot_logic.py         # Kernlogik des Chatbots: Erstellung des Assistants, Beantwortung von Fragen, Verwaltung von Threads
+├── sync_scheduler.py        # Hintergrundprozess: plant und steuert die regelmäßige Synchronisation von Dokumenten
+├── vector_store_manager.py  # Verwaltung der Vektordatenbank: Import, Aktualisierung und Abgleich von PDF-Inhalten
+├── templates/               # HTML-Vorlagen für die Benutzeroberfläche
+│   ├── index.html           # Chat-Frontend für Nutzer
+│   ├── admin.html           # Admin-Panel für Verwaltung und Monitoring
+├── static/                  # Statische Dateien (CSS, Bilder, JS)
+│   ├── style.css            # Stylesheet für die Chat-Oberfläche
+│   ├── admin.css            # Stylesheet für das Admin-Panel
+├── .secrets/                # Konfigurationsordner (lokal, nicht ins Repo einchecken)
+│   └── secrets.toml         # API-Keys und weitere geheime Einstellungen
+├── requirements.txt         # Liste der Python-Abhängigkeiten
+└── README.md                # Projektdokumentation und Installationshinweise
 ```
 
 ---
 
 ## 🔧 Installation
+
+Voraussetzungen
+- Python ≥ 3.9 (empfohlen: 3.10 oder 3.11)
+- pip zur Installation von Abhängigkeiten
+- Internetverbindung (für die Nutzung der OpenAI-Schnittstelle)
+
+Das Programm ist betriebssystemunabhängig und läuft auf Windows, macOS und Linux, solange die passende Python-Version installiert ist.
+
+1. Repository klonen
+  ```bash
+  git clone https://github.com/LauraFLopes/FHATGPT.git
+  cd chatbot
+   ```
+
+3. Virtuelle Umgebung erstellen
+
+Windows
+  ```bash
+  python -m venv venv
+  venv\Scripts\activate
+   ```
+
+Linux / macOS
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate
+   ```
+
+3. Abhängigkeiten installieren
+   ```bash
+pip install -r requirements.txt
+   ```
+
+4. OpenAI API-Key hinterlegen
+1. API-Key auf https://platform.openai.com/api-keys generieren
+2. Datei .secrets/secrets.toml anlegen (Ordner muss existieren)
+3. API-Key dort eintragen:
+   ```bash
+   API_KEY = "dein-openai-api-key"
+   ADMIN_TOKEN = "ein-geheimes-admin-token"
+  VECTOR_STORE_ID = ""   # wird beim ersten Sync erzeugt
+  ASSISTANT_ID = ""      # wird beim ersten Sync erzeugt
+   ```
+
+5. Programm starten
+   ```bash
+    python app.py
+   ```
+
+Chatbot ist erreichbar unter: http://localhost:5000
+
+Admin-Panel: http://localhost:5000/admin
 
 1. Repository klonen:
    ```bash
