@@ -1,12 +1,15 @@
 """
-Die Klasse kümmert sich um die Logik des Chatbots.
+Dieses Modul enthält die Kernlogik des Chatbots:
+- Verwaltung des Vector Stores
+- Laden/Erstellen des Assistants
+- Senden von Nutzerfragen und Streamen der Antworten
 """
 import time
 import toml
 
 
 """
-Erstellt oder Lädt den OpenAI-Cloud-Vektorspeicher für diesen ChatBot.
+Erstellt oder lädt den OpenAI-Cloud-Vektorspeicher für diesen ChatBot.
 
 @param secrets Die Datenbank mit den wichtigen Infos, wie die ID des Vektorspeichers. 
 @param client Der OpenAI-Client auf dem der Chatbot läuft.
@@ -22,12 +25,15 @@ def load_or_create_vector_store(secrets, client):
 
 
 """
-Erstellt oder lädt den Assistenten auf dem der Chatbot basiert.
+Erstellt oder lädt den OpenAI-Assistant für den Chatbot.
+Nutzt den Vector Store (wird vorher erstellt oder aktualisiert).
+Falls bereits ein Assistant existiert, wird er geladen und ggf. mit neuem Vector Store aktualisiert.
+Falls keiner existiert, wird ein neuer Assistant erstellt und dessen ID in secrets.toml gespeichert.
 
-@param model_version Die Modellversion, die der Chatbot nutzt.
-@param secrets Die Datenbank mit den wichtigen Infos, wie die ID des Vektorspeichers.
-@param client Der OpenAI-Client auf dem der Chatbot läuft.
-@return Der Assistent
+@param model_version: Modellversion, die verwendet wird (z. B. "gpt-4o").
+@param secrets: Konfigurationsdaten inkl. Vector-Store- und Assistant-ID.
+@param client: OpenAI-Client.
+@return Assistant-Objekt.
 """
 def load_assistant(model_version, secrets, client):
     # Vector Store laden/erstellen
@@ -95,13 +101,17 @@ def load_assistant(model_version, secrets, client):
 
 
 """
-Gibt die User-Frage an den Thread weiter und streamt die antwort.
+Sendet eine Nutzerfrage an den Assistant und streamt die Antwort zurück.
+Ablauf:
+1. Nachricht wird an den bestehenden Thread angehängt.
+2. Ein neuer Run mit Streaming wird gestartet.
+3. Antwortteile (Chunks) werden nacheinander empfangen und zurückgegeben.
 
-@param question Die vom User gestellte Frage.
-@param assistant_id Die ID des Assitants.
-@param thread_id Die ID des Threads.
-@param Der OpenAI-Client auf dem der Chatbot basiert.
-@return Die einzelen gestreamten Antwortpassagen
+@param question: Nutzerfrage als String.
+@param assistant_id: ID des Assistants.
+@param thread_id: ID des Threads (eine Session pro Thread).
+@param client: OpenAI-Client.
+@return Generator, der Textstücke (Strings) der Antwort liefert.
 """
 def ask_assistant(question, assistant_id, thread_id, client):
     start = time.time()
