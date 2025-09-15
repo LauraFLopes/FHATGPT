@@ -86,55 +86,14 @@ pip install -r requirements.txt
    ASSISTANT_ID = ""      # wird beim ersten Sync erzeugt
    ```
 
-### 5. Programm starten
-  ```bash
-  python app.py
-  ```
-
-Chatbot ist erreichbar unter: http://localhost:5000
-Admin-Panel: http://localhost:5000/admin
-
-
-
-
-
----
-1. Repository klonen:
-   ```bash
-   git clone https://github.com/LauraFLopes/FHATGPT.git
-   cd chatbot
-   ```
-
-2. Virtuelle Umgebung erstellen und aktivieren:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # macOS/Linux
-   venv\Scripts\activate      # Windows
-   ```
-
-3. Abhängigkeiten installieren:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Konfiguration in `.secrets/secrets.toml` anlegen:
-   ```toml
-   API_KEY = "dein-openai-api-key"
-   ADMIN_TOKEN = "ein-geheimes-admin-token"
-   VECTOR_STORE_ID = ""   # wird beim ersten Sync erzeugt
-   ASSISTANT_ID = ""      # wird beim ersten Sync erzeugt
-   ```
-
----
-
-## ▶️ Starten
+### Starten
 
 ```bash
 python app.py
 ```
 
 - Chatbot ist erreichbar unter: [http://localhost:5000](http://localhost:5000)  
-- Admin-Panel: [http://localhost:5000/admin](http://localhost:5000/admin)  
+- Admin-Panel: [http://localhost:5000/admin](http://localhost:5000/admin)
 
 ---
 
