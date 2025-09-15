@@ -116,7 +116,7 @@ Funktionen:
 
 ## 👩‍💻 Entwicklung
 
-- **Frontend**: HTML + CSS + Vanilla JS (mit SSE für Streaming)  
+- **Frontend**: HTML + CSS
 - **Backend**: Flask + OpenAI Python SDK  
 - **Scheduler**: `schedule`-Library für Hintergrundjobs  
 
