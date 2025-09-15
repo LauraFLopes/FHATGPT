@@ -23,19 +23,20 @@ Außerdem gibt es ein Admin-Panel für Synchronisation und Systemverwaltung.
 
 ```
 .
-├── app.py                 # Flask-App (HTTP-Endpunkte, Admin, Chat)
-├── chatbot_logic.py       # Logik für Assistant, Fragen stellen, Threads
-├── sync_scheduler.py      # Hintergrund-Scheduler für PDF-Synchronisation
-├── templates/
-│   ├── index.html         # Chat-Oberfläche
-│   ├── admin.html         # Admin-Panel
-├── static/
-│   ├── style.css          # Styles für Chat
-│   ├── admin.css          # Styles für Admin-Panel
-├── .secrets/              # Konfigurationsordner
-│   └── secrets.toml       # API-Keys und Einstellungen
-├── requirements.txt       # Python-Abhängigkeiten
-└── README.md              # Projektbeschreibung
+├── app.py                 # Haupteinstiegspunkt: Flask-App mit HTTP-Endpunkten (Chat & Admin)
+├── chatbot_logic.py       # Kernlogik des Chatbots: Erstellung des Assistants, Beantwortung von Fragen, Verwaltung von Threads
+├── sync_scheduler.py      # Hintergrundprozess: plant und steuert die regelmäßige Synchronisation von Dokumenten
+├── vector_store_manager.py# Verwaltung der Vektordatenbank: Import, Aktualisierung und Abgleich von PDF-Inhalten
+├── templates/             # HTML-Vorlagen für die Benutzeroberfläche
+│   ├── index.html         # Chat-Frontend für Nutzer
+│   ├── admin.html         # Admin-Panel für Verwaltung und Monitoring
+├── static/                # Statische Dateien (CSS, Bilder, JS)
+│   ├── style.css          # Stylesheet für die Chat-Oberfläche
+│   ├── admin.css          # Stylesheet für das Admin-Panel
+├── .secrets/              # Konfigurationsordner (lokal, nicht ins Repo einchecken)
+│   └── secrets.toml       # API-Keys und weitere geheime Einstellungen
+├── requirements.txt       # Liste der Python-Abhängigkeiten
+└── README.md              # Projektdokumentation und Installationshinweise
 ```
 
 ---
