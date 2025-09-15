@@ -76,9 +76,9 @@ pip install -r requirements.txt
    ```
 
 ### 4. OpenAI API-Key hinterlegen
-#### 1. API-Key auf https://platform.openai.com/api-keys generieren
-#### 2. Datei .secrets/secrets.toml anlegen (Ordner muss existieren)
-#### 3. API-Key dort eintragen:
+- API-Key auf https://platform.openai.com/api-keys generieren
+- Datei .secrets/secrets.toml anlegen (Ordner muss existieren)
+- API-Key dort eintragen:
    ```bash
    API_KEY = "dein-openai-api-key"
    ADMIN_TOKEN = "ein-geheimes-admin-token"
