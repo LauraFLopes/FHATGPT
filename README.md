@@ -45,7 +45,7 @@ Außerdem gibt es ein Admin-Panel für Synchronisation und Systemverwaltung.
 
 1. Repository klonen:
    ```bash
-   git clone https://github.com/dein-user/chatbot.git
+   git clone https://github.com/LauraFLopes/FHATGPT.git
    cd chatbot
    ```
 
