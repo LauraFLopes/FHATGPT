@@ -8,7 +8,7 @@ Außerdem gibt es ein Admin-Panel für Synchronisation und Systemverwaltung.
 
 ## 🚀 Features
 
-- Chatbot mit **Streaming-Antworten** (Markdown wird unterstützt)
+- Chatbot mit **Streaming-Antworten**
 - **Automatische Synchronisation** von lokalen PDFs mit einem OpenAI Vector Store
 - **Admin-Panel** mit Login-Token:
   - Vector Store Status abrufen
