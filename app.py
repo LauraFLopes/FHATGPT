@@ -1,5 +1,6 @@
 """
-Die Klasse ist für die Initialisierung der Webapp und den Umgang mit den HTTP-Requests zuständig.
+Dieses Modul initialisiert die Flask-Webanwendung und definiert alle HTTP-Endpunkte 
+für den Chatbot sowie die Admin-Schnittstellen.
 """
 from flask import Flask, render_template, request, jsonify, Response, stream_with_context
 import toml
@@ -359,7 +360,7 @@ def admin_panel():
     """Admin Web-Interface (Token-Eingabe erfolgt im Frontend)."""
     return render_template("admin.html")
 
-
+# Startet die Flask-App und initialisiert den automatischen Synchronisations-Scheduler.
 if __name__ == "__main__":
     # Initialisierung des Dateien-Synchronisations-Schedulers.
     try:
