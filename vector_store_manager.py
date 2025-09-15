@@ -1,6 +1,6 @@
 """
-Kümmert sich um die Synchronisation der lokal gespeicherten PDF-Dateien und
-der Cloud basierten Vektorspeicherdatenbank.
+Dieses Modul verwaltet die Synchronisation zwischen lokal gespeicherten PDF-Dateien 
+und dem OpenAI-gestützten Vektorspeicher.
 """
 import os
 import hashlib
@@ -11,7 +11,11 @@ import toml
 
 
 """
-Der Manager für die Aufgaben der Synchronisation.
+Verwaltet alle Aufgaben der Synchronisation zwischen lokalen PDFs und dem OpenAI-Vektorspeicher:
+- Scannen und Hashing der lokalen Dateien
+- Verwaltung des Manifests
+- Upload, Update und Löschung von Dateien im Vektorspeicher
+- Status- und Reset-Funktionen
 
 @param self Die eigene Instanz
 @param client Der OpenAI-Client auf dem der Chatbot läuft.
@@ -83,7 +87,7 @@ class VectorStoreManager:
     
 
     """
-    Sucht alle PDF-Dateien aus dem PDF-Ordner heraus und behält dabei die Ordnerstruktur bei.
+    Sucht alle PDF-Dateien aus dem PDF-Ordner heraus und behält Ordnerstruktur bei, speichert Dateiinformationen inkl. Hash, Größe, Änderungsdatum.
 
     @param self Die eigene Instanz.
     @return Die File-Infos zu allen PDF-Dateien
@@ -720,7 +724,7 @@ class VectorStoreManager:
 
     """
     Setzt alles zurück, also löscht OpenAI-Vectorspeicher,
-    Dateien (Keine PDF-Datein), Manifest und Secrets (Außer API-Key).
+    Dateien (Keine PDF-Dateien), Manifest und Secrets (Außer API-Key).
 
     @param self Die eigene Instanz
     @param keep_admin_token Ob der Token für die Admin-Seite behalten werden soll, oder nicht

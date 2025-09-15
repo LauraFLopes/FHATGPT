@@ -9,9 +9,11 @@
 <body>
     <div class="container">
         <h1>🔧 FH Wedel Chatbot - Admin Panel</h1>
-        
+
+        <!-- Session-Info: zeigt verbleibende Zeit oder persistenten Status -->
         <div id="session-info" class="session-info hidden"></div>
-        
+
+        <!-- Login-Bereich für Admin-Token -->
         <div id="login-section">
             <p>Bitte Admin-Token eingeben:</p>
             <input type="password" id="token-input" class="token-input" placeholder="Admin-Token" autocomplete="off">
@@ -31,7 +33,8 @@
                 Die Session läuft standardmäßig nach 15 Minuten Inaktivität ab.
             </div>
         </div>
-        
+
+        <!-- Admin-Bereich mit Status, Sync und Reset -->
         <div id="admin-section" class="hidden">
             <div style="margin-bottom: 20px;">
                 <button onclick="checkStatus()">📊 Status abrufen</button>
@@ -39,7 +42,8 @@
                 <button onclick="resetSystem()" style="background: #dc3545; float: right; margin-left: 10px;">🚨 System Reset</button>
                 <button onclick="logout()" class="logout-btn" style="float: right;">🚪 Abmelden</button>
             </div>
-            
+
+            <!-- Ausgabe von Status, Sync-Details und Reset-Meldungen -->
             <div id="status-output"></div>
         </div>
     </div>
@@ -49,10 +53,10 @@
         const SESSION_TIMEOUT = 15 * 60 * 1000; // 15 Minuten in Millisekunden
         const PERSISTENT_TIMEOUT = 30 * 24 * 60 * 60 * 1000; // 30 Tage
         
-        let adminToken = null;
-        let lastActivity = Date.now();
-        let sessionTimer = null;
-        let isPersistent = false;
+        let adminToken = null;    // aktuell verwendetes Token
+        let lastActivity = Date.now(); // letzter Aktivitätszeitpunkt
+        let sessionTimer = null;  // Timer für Session-Ablauf
+        let isPersistent = false; // true, falls "Angemeldet bleiben" aktiv ist
         
         /**
         * Initialisiert die Session beim Laden der Seite.
